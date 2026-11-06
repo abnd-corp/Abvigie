@@ -48,7 +48,7 @@ Les positions sont en **tuiles, relatives à la parcelle** (qui fait 3 × 3), le
 
 ### Les détails animés (`deco`)
 
-Une chaîne `nom:arguments`. Ceux qui existent : `fumee`, `engrenage`, `engrenage-haut`, `hexagone`, `epingle`, `antenne`, `cadenas`, `bouclier`, `globe`, `croix`, `fanion-haut`, `faisceau`, `projecteur`, `convoyeur`, `eau`, `piece`, `canal`, `baies`, `colonnes`, `balance`, `echafaudage`, `grue`, `clim`. Chacun est une petite fonction de `DETAILS` dans `batiments.js`, que l'on copie pour en inventer un autre. Elle reçoit le contexte de dessin et l'heure : **tout ce qui bouge se calcule à partir de l'heure, sans état**, donc sans fuite ni usure.
+Une chaîne `nom:arguments`. Ceux qui existent : `fumee`, `engrenage`, `engrenage-haut`, `hexagone`, `epingle`, `antenne`, `cadenas`, `bouclier`, `globe`, `croix`, `fanion-haut`, `faisceau`, `projecteur`, `convoyeur`, `eau`, `piece`, `riviere`, `baies`, `colonnes`, `balance`, `echafaudage`, `grue`, `clim`. Chacun est une petite fonction de `DETAILS` dans `batiments.js`, que l'on copie pour en inventer un autre. Elle reçoit le contexte de dessin et l'heure : **tout ce qui bouge se calcule à partir de l'heure, sans état**, donc sans fuite ni usure.
 
 ## Faire un bâtiment qui plaît
 

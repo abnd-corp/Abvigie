@@ -153,7 +153,7 @@ body.fiche-page > * { max-inline-size: 64rem; margin-inline: auto; }
 @media (min-width: 100rem) { .jeu-zone { grid-template-columns: minmax(0, 1fr) 34rem; } }
 @media (max-width: 52rem), (orientation: portrait) and (max-width: 64rem) {
   /* téléphone ou tablette en portrait : la carte en haut, le panneau en dessous */
-  .jeu-zone { grid-template-columns: 1fr; grid-template-rows: minmax(14rem, min(50dvh, 95vw)) minmax(0, 1fr); }
+  .jeu-zone { grid-template-columns: 1fr; grid-template-rows: minmax(15rem, 50dvh) minmax(0, 1fr); }
   .lateral { border-inline-start: 0; border-block-start: 1px solid var(--trait); }
   .legende { display: none; }
   .fiche-tete { flex-direction: column; align-items: flex-start; }

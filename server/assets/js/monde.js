@@ -20,7 +20,6 @@ export const LOT = 4;
  * @typedef {{
  *   projet: Projet,
  *   ox: number, oy: number,
- *   lot: { x: number, y: number },
  *   hull: [number, number][],
  *   ancre: [number, number],
  *   profondeur: number,
@@ -36,79 +35,12 @@ const COULEURS_QUARTIER = /** @type {Record<string, string>} */ ({
 });
 
 /**
- * Les formes possibles d'un quartier de `n` parcelles : peu de parcelles perdues, plutôt carrées.
+ * Les rangées de parcelles d'un quartier : deux lignes pour une petite poignée de projets, davantage ensuite.
  * @param {number} n
- * @returns {{ c: number, l: number }[]}
  */
-function formes(n) {
-  /** @type {{ c: number, l: number }[]} */
-  const liste = [];
-  for (let l = 1; l <= n; l++) {
-    const c = Math.ceil(n / l);
-    if (c * l - n <= 1 && Math.abs(c - l) <= 3 && !liste.some((f) => f.c === c && f.l === l)) liste.push({ c, l });
-  }
-  liste.sort((a, b) => Math.abs(a.c - a.l) - Math.abs(b.c - b.l));
-  return liste.slice(0, 3);
-}
-
-/**
- * Range des blocs rectangulaires sur une grille de parcelles, chacun à la première place libre (de haut en bas, de gauche à droite).
- * @param {{ c: number, l: number }[]} blocs
- * @param {number} largeur
- */
-function poser(blocs, largeur) {
-  const pris = new Set();
-  /** @type {{ x: number, y: number }[]} */
-  const places = [];
-  let haut = 0;
-  let large = 0;
-  for (const { c, l } of blocs) {
-    let posee = false;
-    for (let y = 0; !posee; y++) {
-      for (let x = 0; x + c <= largeur && !posee; x++) {
-        let libre = true;
-        for (let i = 0; i < c && libre; i++) for (let j = 0; j < l && libre; j++) if (pris.has(`${x + i},${y + j}`)) libre = false;
-        if (!libre) continue;
-        for (let i = 0; i < c; i++) for (let j = 0; j < l; j++) pris.add(`${x + i},${y + j}`);
-        places.push({ x, y });
-        haut = Math.max(haut, y + l);
-        large = Math.max(large, x + c);
-        posee = true;
-      }
-    }
-  }
-  return { places, largeur: large, hauteur: haut };
-}
-
-/**
- * La mise en page de toute la ville : essaie les formes de chaque quartier et plusieurs largeurs, garde la plus compacte
- * et la moins étirée. Le dernier bloc est l'emplacement du premier client (une parcelle).
- * @param {number[]} tailles  le nombre de projets de chaque quartier
- */
-function agencer(tailles) {
-  const choix = tailles.map((n) => (tailles.length > 5 ? formes(n).slice(0, 1) : formes(n)));
-  const client = { c: 1, l: 1 };
-  let meilleur = null;
-  let note = Infinity;
-  /** @param {{ c: number, l: number }[]} blocs */
-  const essayer = (blocs) => {
-    const plusLarge = Math.max(...blocs.map((b) => b.c));
-    for (let largeur = plusLarge; largeur <= 9; largeur++) {
-      const r = poser([...blocs, client], largeur);
-      const n = r.largeur * r.hauteur + Math.abs(r.largeur - r.hauteur) * 1.5;
-      if (n < note) {
-        note = n;
-        meilleur = { blocs, ...r };
-      }
-    }
-  };
-  /** @param {number} i @param {{ c: number, l: number }[]} acc */
-  const parcourir = (i, acc) => {
-    if (i === choix.length) return essayer(acc);
-    for (const f of choix[i]) parcourir(i + 1, [...acc, f]);
-  };
-  parcourir(0, []);
-  return /** @type {NonNullable<typeof meilleur>} */ (meilleur);
+function disposition(n) {
+  const lignes = n <= 2 ? 1 : n <= 8 ? 2 : Math.ceil(n / 4);
+  return { lignes, colonnes: Math.ceil(n / lignes) };
 }
 
 /**
@@ -122,23 +54,28 @@ export function creerMonde(donnees) {
   /** @type {{ cx: number, cy: number }[]} */
   const vides = [];
 
-  // --- les blocs de quartiers, rangés au plus compact
-  const presents = donnees.quartiers.filter((q) => donnees.projets.some((p) => p.quartier === q.id));
-  const plan = agencer(presents.map((q) => donnees.projets.filter((p) => p.quartier === q.id).length));
-  presents.forEach((q, qi) => {
+  // --- les blocs de quartiers, rangés de gauche à droite sur des étagères de 8 parcelles de large
+  const LARGEUR_MAX = 8;
+  let cx = 0;
+  let cy = 0;
+  let hautEtagere = 0;
+  let largeurTotale = 0;
+  for (const q of donnees.quartiers) {
     const projets = donnees.projets.filter((p) => p.quartier === q.id);
-    const { c: colonnes, l: lignes } = plan.blocs[qi];
-    const { x: cx, y: cy } = plan.places[qi];
+    if (!projets.length) continue;
+    const { lignes, colonnes } = disposition(projets.length);
+    if (cx > 0 && cx + colonnes > LARGEUR_MAX) {
+      cx = 0;
+      cy += hautEtagere + 1;
+      hautEtagere = 0;
+    }
     quartiers.push({ id: q.id, titre: q.titre, x: cx, y: cy, w: colonnes, h: lignes });
     projets.forEach((projet, i) => {
       const lx = cx + (i % colonnes);
       const ly = cy + Math.floor(i / colonnes);
+      const ox = lx * LOT + 1;
+      const oy = ly * LOT + 1;
       const e = emprise(projet.slug);
-      // la parcelle : 3 × 3 tuiles après la route ; les volumes de chaque bâtiment sont dessinés dans ce repère
-      const lotX = lx * LOT + 1;
-      const lotY = ly * LOT + 1;
-      const ox = lotX;
-      const oy = lotY;
       /** @type {[number, number][]} */
       const coins = [];
       for (const z of [0, e.h]) {
@@ -148,7 +85,6 @@ export function creerMonde(donnees) {
         projet,
         ox,
         oy,
-        lot: { x: lotX, y: lotY },
         hull: enveloppe(coins),
         ancre: proj(ox + e.x + e.w / 2, oy + e.y + e.d / 2, e.h),
         profondeur: ox + e.x + e.w + (oy + e.y + e.d),
@@ -156,12 +92,15 @@ export function creerMonde(donnees) {
       });
     });
     for (let k = projets.length; k < lignes * colonnes; k++) vides.push({ cx: cx + (k % colonnes), cy: cy + Math.floor(k / colonnes) });
-  });
-  const hauteurTotale = plan.hauteur;
+    cx += colonnes + 1;
+    largeurTotale = Math.max(largeurTotale, cx - 1);
+    hautEtagere = Math.max(hautEtagere, lignes);
+  }
+  const hauteurTotale = cy + hautEtagere;
 
-  // l'emplacement du premier client : la charte demande de s'y préparer, il reste donc libre (le dernier bloc posé)
-  const client = { cx: plan.places[plan.places.length - 1].x, cy: plan.places[plan.places.length - 1].y };
-  const lotsLargeur = plan.largeur;
+  // l'emplacement du premier client : la charte demande de s'y préparer, il reste donc libre
+  const client = { cx: Math.min(cx, LARGEUR_MAX - 1), cy };
+  const lotsLargeur = Math.max(largeurTotale, client.cx + 1);
   /** La plaque : une marge d'une demi-parcelle autour de tout. */
   const marge = 2;
   const W = lotsLargeur * LOT + 1 + marge * 2;
@@ -170,8 +109,6 @@ export function creerMonde(donnees) {
   for (const b of batiments) {
     b.ox += decalage;
     b.oy += decalage;
-    b.lot.x += decalage;
-    b.lot.y += decalage;
     b.hull = b.hull.map(([x, y]) => /** @type {[number, number]} */ ([x + proj(decalage, decalage)[0], y + proj(decalage, decalage)[1]]));
     b.ancre = [b.ancre[0] + proj(decalage, decalage)[0], b.ancre[1] + proj(decalage, decalage)[1]];
     b.profondeur += decalage * 2;
@@ -184,7 +121,7 @@ export function creerMonde(donnees) {
   }
   const clientTuile = { x: client.cx * LOT + decalage + 1, y: client.cy * LOT + decalage + 1 };
 
-  // les parcelles libres deviennent des parcs
+  // les parcelles libres deviennent des parcs ; la plus proche du centre accueille un étang
   const lotsLarg = lotsLargeur;
   const lotsHaut = hauteurTotale;
   const occupe = new Set([`${client.cx},${client.cy}`]);
@@ -197,17 +134,21 @@ export function creerMonde(donnees) {
   /** @type {{ cx: number, cy: number }[]} */
   const parcs = [];
   for (let ix = 0; ix < lotsLarg; ix++) for (let iy = 0; iy < lotsHaut; iy++) if (!occupe.has(`${ix},${iy}`)) parcs.push({ cx: ix, cy: iy });
+  const milieu = { x: (lotsLarg - 1) / 2, y: (lotsHaut - 1) / 2 };
+  parcs.sort((a, b) => Math.hypot(a.cx - milieu.x, a.cy - milieu.y) - Math.hypot(b.cx - milieu.x, b.cy - milieu.y));
+  const etang = parcs.length ? parcs[0] : null;
   const estParc = new Set(parcs.map((p) => `${p.cx},${p.cy}`));
 
   // --- le décor : arbres dans les parcelles vides et les coins, lampadaires aux carrefours
   /** @type {{ gx: number, gy: number, taille: number, graine: number }[]} */
   const arbres = [];
   for (const p of parcs) {
-    for (let k = 0; k < 7; k++) {
+    for (let k = 0; k < (p === etang ? 4 : 7); k++) {
       const h = hash(`parc${p.cx},${p.cy},${k}`);
+      const bord = p === etang;
       arbres.push({
-        gx: p.cx * LOT + decalage + 0.6 + (h % 24) / 10,
-        gy: p.cy * LOT + decalage + 0.6 + ((h >>> 5) % 24) / 10,
+        gx: p.cx * LOT + decalage + (bord ? (k % 2 ? 0.7 : 2.5) : 0.6 + (h % 24) / 10),
+        gy: p.cy * LOT + decalage + (bord ? 0.7 + (h % 18) / 10 : 0.6 + ((h >>> 5) % 24) / 10),
         taille: 0.8 + (h % 6) / 10,
         graine: h,
       });
@@ -222,8 +163,8 @@ export function creerMonde(donnees) {
   for (const b of batiments) {
     const h = hash(b.projet.slug + 'arbre');
     const e = emprise(b.projet.slug);
-    if (e.x > 0.55) arbres.push({ gx: b.lot.x + 0.3, gy: b.lot.y + 2.7, taille: 0.7, graine: h });
-    if (e.y + e.d < 2.45) arbres.push({ gx: b.lot.x + 2.7, gy: b.lot.y + 2.75, taille: 0.65, graine: h >>> 4 });
+    if (e.x > 0.55) arbres.push({ gx: b.ox + 0.3, gy: b.oy + 2.7, taille: 0.7, graine: h });
+    if (e.y + e.d < 2.45) arbres.push({ gx: b.ox + 2.7, gy: b.oy + 2.75, taille: 0.65, graine: h >>> 4 });
   }
   /** @type {{ gx: number, gy: number }[]} */
   const lampadaires = [];
@@ -308,12 +249,6 @@ export function creerMonde(donnees) {
       ctx.fill();
     }
 
-    // le socle de chaque bâtiment : la parcelle dallée, un liseré clair
-    for (const b of batiments) {
-      const { x, y } = b.lot;
-      polygone(ctx, [proj(x - 0.08, y - 0.08), proj(x + 3.08, y - 0.08), proj(x + 3.08, y + 3.08), proj(x - 0.08, y + 3.08)], 'rgba(150,165,240,0.13)', 'rgba(160,178,255,0.34)');
-    }
-
     // le trait de la plaque et les pointillés au milieu des routes
     ctx.strokeStyle = 'rgba(110,130,230,0.35)';
     ctx.lineWidth = 2;
@@ -353,6 +288,25 @@ export function creerMonde(donnees) {
       ctx.textBaseline = 'top';
       ctx.fillText(q.titre.toUpperCase().split('').join(' '), 8, 10);
       ctx.restore();
+    }
+
+    // l'étang du parc : de l'eau qui ondule doucement
+    if (etang) {
+      const ex = etang.cx * LOT + decalage + 1;
+      const ey = etang.cy * LOT + decalage + 1;
+      polygone(ctx, [proj(ex + 0.4, ey + 0.4), proj(ex + 2.6, ey + 0.4), proj(ex + 2.6, ey + 2.6), proj(ex + 0.4, ey + 2.6)], 'rgba(64,120,225,0.62)', 'rgba(150,190,255,0.6)');
+      ctx.strokeStyle = 'rgba(210,228,255,0.55)';
+      ctx.lineWidth = 1;
+      for (let k = 0; k < 4; k++) {
+        ctx.beginPath();
+        for (let i = 0; i <= 10; i++) {
+          const dz = s.anim ? Math.sin(s.t * 1.5 + i * 0.9 + k * 1.7) * 0.9 : 0;
+          const [px, py] = proj(ex + 0.7 + (i / 10) * 1.6, ey + 0.8 + k * 0.5, dz);
+          if (i) ctx.lineTo(px, py);
+          else ctx.moveTo(px, py);
+        }
+        ctx.stroke();
+      }
     }
 
     // l'emplacement du premier client
@@ -448,7 +402,7 @@ export function creerMonde(donnees) {
         dessiner: (ctx) => {
           const p = b.projet;
           dessiner(ctx, { slug: p.slug, accent: p.accent, lumieres: p.lumieres, archive: p.archive }, { ...s, ox: b.ox, oy: b.oy });
-          if (p.chantier) grue(ctx, b.lot.x + 2.7, b.lot.y + 0.4, b.haut, s);
+          if (p.chantier) grue(ctx, b.ox + 2.7, b.oy + 0.4, b.haut, s);
           apres(ctx, b);
         },
       });
