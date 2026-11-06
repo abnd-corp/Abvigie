@@ -37,6 +37,7 @@ La frontière importante est entre `collect` et le reste : **GitHub n'existe que
 2. **Rafraîchissement** : un fil dédié relit la source, fabrique un nouveau site complet, puis le **remplace d'un seul geste** (`RwLock<Arc<Site>>`). Une requête en cours garde son ancien site jusqu'au bout : aucune page à moitié mise à jour.
 3. **Échec de rafraîchissement** : les pages précédentes sont conservées. Mieux vaut une donnée un peu ancienne que pas de page.
 4. **Dépôt illisible** : un dépôt dont les tickets ou la CI ne se lisent pas ne fait pas tomber les autres. Il apparaît, et un bandeau « données partielles » le signale.
+5. **Lecture partielle** (la limite de GitHub atteinte, un dépôt illisible) : elle **ne remplace pas** un site complet, parce que les alertes des projets non lus disparaîtraient et le tableau de bord afficherait « rien à signaler » faute de données. Les pages précédentes sont gardées pour 3 lectures partielles d'affilée ; si le problème dure, l'état partiel est accepté et le dit (`site::faut_remplacer`).
 
 ## Pourquoi le HTML est fabriqué côté serveur
 

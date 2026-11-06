@@ -17,7 +17,7 @@ make run          # http://127.0.0.1:8080, avec des données de démonstration
 
 Prérequis : Rust (voir `rust-version` dans `Cargo.toml`). Rien d'autre : pas de Node, pas de base de données, pas de réseau.
 
-Pour lire GitHub en direct au lieu des données de démonstration : `cargo run` (60 requêtes par heure sans jeton, voir [le déploiement](docs/deploiement.md)).
+Pour lire GitHub en direct au lieu des données de démonstration : `cargo run`. Sans jeton, GitHub n'accepte que 60 requêtes par heure et une seule lecture en consomme 33 : c'est bon pour essayer une fois, pas pour tenir ([le déploiement](docs/deploiement.md)).
 
 ## Ce qu'il y a dedans
 

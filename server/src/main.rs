@@ -101,13 +101,20 @@ fn executer(arguments: &[String]) -> Result<(), String> {
         thread::Builder::new()
             .name("rafraichissement".into())
             .spawn(move || {
+                let mut partiels = 0;
                 loop {
                     thread::sleep(Duration::from_secs(config.rafraichir_secondes));
                     match fabriquer(source.as_ref(), &config) {
                         Ok(site) => {
-                            *courant.write().unwrap_or_else(PoisonError::into_inner) =
-                                Arc::new(site);
-                            journal("données rafraîchies");
+                            let actuel =
+                                Arc::clone(&courant.read().unwrap_or_else(PoisonError::into_inner));
+                            if site::faut_remplacer(&actuel, &site, &mut partiels) {
+                                *courant.write().unwrap_or_else(PoisonError::into_inner) =
+                                    Arc::new(site);
+                                journal("données rafraîchies");
+                            } else {
+                                journal("lecture partielle (limite de GitHub ?) : pages précédentes conservées");
+                            }
                         }
                         // on garde les pages précédentes : mieux vaut une donnée un peu ancienne que pas de page
                         Err(raison) => journal(&format!(

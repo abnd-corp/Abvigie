@@ -42,6 +42,29 @@ pub struct Site {
     pub degrade: bool,
     /// Nombre de projets affichés.
     pub projets: usize,
+    /// Vrai quand certaines données n'ont pas pu être lues (limite de GitHub, dépôt illisible…).
+    pub partiel: bool,
+}
+
+/// Combien de rafraîchissements partiels d'affilée on refuse avant de les accepter quand même.
+const PARTIELS_TOLERES: u32 = 3;
+
+/// Faut-il remplacer le site courant par le nouveau ?
+///
+/// Un rafraîchissement **partiel** (un dépôt illisible, la limite de GitHub atteinte) ferait disparaître les alertes
+/// des projets qu'on n'a pas pu lire : un tableau de bord qui affiche « rien à signaler » faute de données ment.
+/// On garde donc le site précédent, s'il était complet, pendant quelques rafraîchissements ; au-delà, le problème
+/// semble durable (un dépôt toujours illisible) et on accepte l'état partiel, qui dit ce qui manque.
+pub fn faut_remplacer(actuel: &Site, nouveau: &Site, partiels_d_affilee: &mut u32) -> bool {
+    if !nouveau.partiel {
+        *partiels_d_affilee = 0;
+        return true;
+    }
+    if actuel.degrade || actuel.partiel {
+        return true; // rien de meilleur à garder
+    }
+    *partiels_d_affilee += 1;
+    *partiels_d_affilee > PARTIELS_TOLERES
 }
 
 /// Empreinte FNV-1a 64 bits : sert d'`ETag` et de version de ressource. Pas de cryptographie ici.
@@ -209,6 +232,7 @@ impl Site {
             introuvable,
             degrade: false,
             projets: etat.projets.len(),
+            partiel: !etat.avertissements.is_empty(),
         }
     }
 
@@ -233,6 +257,7 @@ impl Site {
             sante.statut = 503;
         }
         site.degrade = true;
+        site.partiel = true;
         site
     }
 
@@ -249,5 +274,68 @@ impl Site {
     #[cfg(test)]
     pub fn chemins(&self) -> Vec<&str> {
         self.pages.keys().map(String::as_str).collect()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn site(partiel: bool, degrade: bool) -> Site {
+        let mut s = Site::construire(
+            &Etat {
+                schema: VERSION_SCHEMA,
+                genere_le: "2026-11-06T12:00:00Z".into(),
+                organisation: "x".into(),
+                resume: Resume::default(),
+                avertissements: if partiel {
+                    vec!["x".into()]
+                } else {
+                    Vec::new()
+                },
+                projets: Vec::new(),
+            },
+            &Config::default(),
+            0,
+        );
+        s.degrade = degrade;
+        s
+    }
+
+    #[test]
+    fn un_site_complet_remplace_toujours_l_ancien() {
+        let mut n = 2;
+        assert!(faut_remplacer(
+            &site(false, false),
+            &site(false, false),
+            &mut n
+        ));
+        assert_eq!(n, 0, "le compteur repart à zéro");
+    }
+
+    #[test]
+    fn un_rafraichissement_partiel_ne_remplace_pas_un_site_complet_tout_de_suite() {
+        let (complet, partiel) = (site(false, false), site(true, false));
+        let mut n = 0;
+        for _ in 0..PARTIELS_TOLERES {
+            assert!(!faut_remplacer(&complet, &partiel, &mut n));
+        }
+        // le problème dure : on finit par accepter l'état partiel, qui dit ce qui manque
+        assert!(faut_remplacer(&complet, &partiel, &mut n));
+    }
+
+    #[test]
+    fn on_accepte_du_partiel_quand_il_n_y_a_rien_de_mieux() {
+        let mut n = 0;
+        assert!(faut_remplacer(
+            &site(true, false),
+            &site(true, false),
+            &mut n
+        ));
+        assert!(faut_remplacer(
+            &site(true, true),
+            &site(true, false),
+            &mut n
+        ));
     }
 }

@@ -34,8 +34,10 @@ Options : `--fixtures <dossier>` (données locales), `--adresse <hôte:port>`, `
 
 - **En lecture seule, limité aux dépôts publics**, jamais un jeton personnel (R14). La cible est la GitHub App d'`abnd-bot` ([gouvernance#25](https://github.com/abnd-corp/gouvernance/issues/25)).
 - **Jamais dans le dépôt, jamais dans une image** : seulement dans l'environnement du processus, depuis le coffre d'équipe (R9, R42).
-- **Combien de requêtes ?** Au démarrage : 1 (la liste) + 2 par dépôt (tickets et CI), soit environ 33 pour 16 dépôts. Aux rafraîchissements suivants, les réponses inchangées sont renvoyées par GitHub en `304` et **ne comptent pas** dans la limite. Même sans cela, 33 requêtes toutes les 15 minutes font environ 130 par heure : bien sous les 5 000 d'un jeton.
-- Sans jeton, ce serait 130 par heure pour une limite de 60 : le service resterait en « données partielles » une partie du temps. **Il en faut un en production.**
+- **Combien de requêtes ?** Une lecture complète fait 1 (la liste) + 2 par dépôt (tickets et CI), soit **33 pour 16 dépôts**. Toutes les 15 minutes, cela fait environ 130 par heure : bien sous les 5 000 d'un jeton.
+- **Sans jeton, ça ne tient pas.** Mesuré le 6 novembre 2026 : le démarrage consomme 33 des 60 requêtes horaires, et la lecture suivante (60 secondes plus tard) a épuisé le reste et laissé **6 dépôts illisibles**. Le cache `ETag` du service n'a **pas** protégé le quota sans jeton : les réponses `304` y ont été décomptées. Avec un jeton, la documentation de GitHub dit que les `304` ne comptent pas ; cela **n'a pas été vérifié ici**, et ne change rien à la marge confortable de 5 000.
+- **Un rafraîchissement partiel ne remplace pas un site complet** : il serait trompeur, les alertes des projets illisibles disparaîtraient. Le service garde les pages précédentes pendant 3 lectures partielles d'affilée, puis accepte l'état partiel, qui affiche un bandeau « données partielles » (`site::faut_remplacer`, testé).
+- **Il faut donc un jeton en production**, et la lecture en direct sans jeton ne sert qu'à essayer une fois.
 
 ## Derrière un proxy (obligatoire)
 
