@@ -37,6 +37,9 @@ async function demarrer() {
     personnages: true,
     /** @type {Batiment | null} */ survol: null,
     /** @type {ReturnType<typeof acteurs.trouver>} */ survolActeur: null,
+    /** @type {import('./monde.js').Quartier | null} */ quartier: null,
+    /** Les enseignes de quartier telles que dessinées, en pixels d'écran, pour savoir si la souris est dessus. */
+    /** @type {{ q: import('./monde.js').Quartier, x: number, y: number, l: number, h: number }[]} */ enseignes: [],
     /** @type {string | null} */ selection: null,
     /** @type {Set<string>} */ surligne: new Set(),
     curseur: { x: 0, y: 0 },
@@ -140,6 +143,7 @@ async function demarrer() {
     ctx.translate(-camera.x, -camera.y);
     const scene = { ox: 0, oy: 0, t: etat.t, anim: animer(), zoom: camera.zoom };
     monde.dessinerSol(ctx, scene, camera.zoneVisible(80));
+    for (const q of monde.quartiers) monde.contourQuartier(ctx, q, etat.quartier === q);
 
     // au sol : pointillés des chantiers, anneaux de sélection et de quête
     for (const b of monde.batiments) {
@@ -171,12 +175,26 @@ async function demarrer() {
 
     etiquettes(ctx);
     infobulle(ctx);
+    infobulleQuartier(ctx);
   }
 
   /** @param {CanvasRenderingContext2D} c */
   function etiquettes(c) {
     c.textBaseline = 'middle';
     c.textAlign = 'center';
+    etat.enseignes = [];
+    if (camera.zoom >= 0.3) {
+      for (const q of monde.quartiers) {
+        const [wx, wy] = monde.enseigneQuartier(q);
+        const [ex, y] = camera.versEcran(wx, wy);
+        c.font = `800 11px ${POLICE}`;
+        const l = c.measureText(q.titre.toUpperCase()).width + 26;
+        // l'enseigne reste toujours dans l'écran : jamais coupée sur un bord
+        const x = Math.min(Math.max(ex, 8 + l / 2), camera.largeur - 8 - l / 2);
+        enseigne(c, q.titre, x, y, monde.accentQuartier(q.id), etat.quartier === q);
+        etat.enseignes.push({ q, x: x - l / 2, y: y - 10, l, h: 20 });
+      }
+    }
     if (etat.noms) {
       for (const b of monde.batiments) {
         const survole = etat.survol === b || etat.selection === b.projet.slug;
@@ -221,6 +239,78 @@ async function demarrer() {
     c.fillText(texte, x, y + 0.5);
   }
 
+  /**
+   * L'enseigne d'un quartier : une pastille à son couleur. Renvoie sa largeur.
+   * @param {CanvasRenderingContext2D} c
+   * @param {string} texte
+   * @param {number} x
+   * @param {number} y
+   * @param {string} couleur
+   * @param {boolean} vif
+   */
+  function enseigne(c, texte, x, y, couleur, vif) {
+    c.font = `800 11px ${POLICE}`;
+    const l = c.measureText(texte.toUpperCase()).width + 26;
+    c.fillStyle = vif ? 'rgba(14,19,48,0.98)' : 'rgba(14,19,48,0.88)';
+    c.strokeStyle = couleur;
+    c.lineWidth = vif ? 2.5 : 1.5;
+    c.beginPath();
+    c.roundRect(x - l / 2, y - 10, l, 20, 10);
+    c.fill();
+    c.stroke();
+    c.fillStyle = couleur;
+    c.beginPath();
+    c.arc(x - l / 2 + 11, y, 3.5, 0, Math.PI * 2);
+    c.fill();
+    c.fillStyle = vif ? '#ffffff' : '#dfe4ff';
+    c.textAlign = 'left';
+    c.fillText(texte.toUpperCase(), x - l / 2 + 19, y + 0.5);
+    c.textAlign = 'center';
+    return l;
+  }
+
+  /** @param {CanvasRenderingContext2D} c */
+  function infobulleQuartier(c) {
+    const q = etat.quartier;
+    if (!q || etat.survol || etat.survolActeur) return;
+    const projets = monde.batiments.filter((b) => b.projet.quartier === q.id).map((b) => b.projet);
+    const alertes = projets.reduce((n, p) => n + p.alertes, 0);
+    const lignes = [q.titre, `${projets.length} projet${projets.length > 1 ? 's' : ''} · ${projets.filter((p) => p.lumieres > 0).length} actif${projets.filter((p) => p.lumieres > 0).length > 1 ? 's' : ''}`];
+    if (alertes) lignes.push(`${alertes} alerte${alertes > 1 ? 's' : ''}`);
+    bulle(c, lignes, monde.accentQuartier(q.id), alertes > 0);
+  }
+
+  /**
+   * Une infobulle près du curseur : un titre, des lignes, la dernière en ambre si `alerte`.
+   * @param {CanvasRenderingContext2D} c
+   * @param {string[]} lignes
+   * @param {string} couleur
+   * @param {boolean} alerte
+   */
+  function bulle(c, lignes, couleur, alerte) {
+    c.textBaseline = 'middle';
+    c.font = `600 11px ${POLICE}`;
+    const l = Math.max(...lignes.map((t) => c.measureText(t).width)) + 18;
+    const h = lignes.length * 16 + 12;
+    let x = etat.curseur.x + 16;
+    let y = etat.curseur.y + 16;
+    if (x + l > camera.largeur - 8) x = etat.curseur.x - l - 12;
+    if (y + h > camera.hauteur - 8) y = etat.curseur.y - h - 12;
+    c.fillStyle = 'rgba(12,16,42,0.96)';
+    c.strokeStyle = couleur;
+    c.lineWidth = 1.5;
+    c.beginPath();
+    c.roundRect(x, y, l, h, 5);
+    c.fill();
+    c.stroke();
+    c.textAlign = 'left';
+    lignes.forEach((t, i) => {
+      c.fillStyle = i === 0 ? '#ffffff' : i === lignes.length - 1 && alerte ? '#f4b860' : '#aab3d8';
+      c.font = `${i === 0 ? 700 : 500} 11px ${POLICE}`;
+      c.fillText(t, x + 9, y + 15 + i * 16);
+    });
+  }
+
   /** @param {CanvasRenderingContext2D} c */
   function infobulle(c) {
     const b = etat.survol;
@@ -230,26 +320,7 @@ async function demarrer() {
     const lignes = [p.nom, etatTexte, `${p.issues} issue${p.issues > 1 ? 's' : ''} · ${p.prs} PR`];
     if (p.alertes) lignes.push(`${p.alertes} alerte${p.alertes > 1 ? 's' : ''}`);
     if (p.chantier) lignes.push('chantier à débloquer');
-    c.font = `600 11px ${POLICE}`;
-    const l = Math.max(...lignes.map((t) => c.measureText(t).width)) + 18;
-    const h = lignes.length * 16 + 12;
-    let x = etat.curseur.x + 16;
-    let y = etat.curseur.y + 16;
-    if (x + l > camera.largeur - 8) x = etat.curseur.x - l - 12;
-    if (y + h > camera.hauteur - 8) y = etat.curseur.y - h - 12;
-    c.fillStyle = 'rgba(12,16,42,0.96)';
-    c.strokeStyle = p.accent;
-    c.lineWidth = 1.5;
-    c.beginPath();
-    c.roundRect(x, y, l, h, 5);
-    c.fill();
-    c.stroke();
-    c.textAlign = 'left';
-    lignes.forEach((t, i) => {
-      c.fillStyle = i === 0 ? '#ffffff' : i === lignes.length - 1 && (p.chantier || p.alertes) ? '#f4b860' : '#aab3d8';
-      c.font = `${i === 0 ? 700 : 500} 11px ${POLICE}`;
-      c.fillText(t, x + 9, y + 15 + i * 16);
-    });
+    bulle(c, lignes, p.accent, p.chantier || p.alertes > 0);
   }
 
   /* ---------------------------------------------------------------- la boucle */
@@ -290,6 +361,8 @@ async function demarrer() {
     const [wx, wy] = camera.versMonde(px, py);
     etat.survolActeur = etat.personnages ? acteurs.trouver(wx, wy) : null;
     etat.survol = etat.survolActeur ? null : monde.trouver(wx, wy);
+    const sousEnseigne = etat.enseignes.find((e) => px >= e.x && px <= e.x + e.l && py >= e.y && py <= e.y + e.h);
+    etat.quartier = etat.survol || etat.survolActeur ? null : sousEnseigne ? sousEnseigne.q : monde.quartierSous(wx, wy);
     canevas.classList.toggle('pointe', etat.survol !== null);
     invalider();
   }
@@ -304,6 +377,7 @@ async function demarrer() {
     sortie() {
       etat.survol = null;
       etat.survolActeur = null;
+      etat.quartier = null;
       invalider();
     },
     change: invalider,

@@ -7,13 +7,14 @@
  * une parcelle occupe donc 4 × 4 tuiles avec sa route. Les positions des routes sont des multiples de 4.
  */
 import { dessiner, emprise, grue } from './batiments.js';
-import { TH, TW, hash, nuance, polygone, proj, unproj } from './iso.js';
+import { TH, TW, hash, nuance, polygone, proj, rgba, unproj } from './iso.js';
 
 /** Tuiles par parcelle, route comprise. */
 export const LOT = 4;
 
 /** @typedef {import('./donnees.js').Donnees} Donnees */
 /** @typedef {import('./donnees.js').Projet} Projet */
+/** @typedef {{ id: string, titre: string, x: number, y: number, w: number, h: number }} Quartier */
 /** @typedef {import('./batiments.js').Scene} Scene */
 
 /**
@@ -28,10 +29,18 @@ export const LOT = 4;
  */
 
 const COULEURS_QUARTIER = /** @type {Record<string, string>} */ ({
-  web: '#2e3a74',
-  systemes: '#235470',
-  outillage: '#503f73',
+  web: '#2b3d82',
+  systemes: '#1f5a78',
+  outillage: '#5a4282',
   autres: '#343b68',
+});
+
+/** La couleur d'accent de chaque quartier : son liseré et son enseigne. */
+const ACCENTS_QUARTIER = /** @type {Record<string, string>} */ ({
+  web: '#86a2ff',
+  systemes: '#5fd0e6',
+  outillage: '#b896ff',
+  autres: '#9aa6d6',
 });
 
 /**
@@ -277,19 +286,6 @@ export function creerMonde(donnees) {
     ctx.stroke();
     ctx.setLineDash([]);
 
-    // les noms des quartiers, écrits à plat sur la route qui borde chaque bloc
-    for (const q of quartiers) {
-      ctx.save();
-      const [x, y] = proj(q.x + 0.4, q.y + q.h * 1 + 0.1 + (q.h > 0 ? 0 : 0));
-      ctx.translate(x, y);
-      ctx.transform(1, 0.5, -1, 0.5, 0, 0);
-      ctx.font = '700 9px ui-monospace, SFMono-Regular, Menlo, monospace';
-      ctx.fillStyle = 'rgba(190,200,255,0.5)';
-      ctx.textBaseline = 'top';
-      ctx.fillText(q.titre.toUpperCase().split('').join(' '), 8, 10);
-      ctx.restore();
-    }
-
     // l'étang du parc : de l'eau qui ondule doucement
     if (etang) {
       const ex = etang.cx * LOT + decalage + 1;
@@ -401,13 +397,56 @@ export function creerMonde(donnees) {
         profondeur: b.profondeur,
         dessiner: (ctx) => {
           const p = b.projet;
+          // la grue d'un chantier se dresse au sol, derrière le bâtiment, et dépasse un peu son toit
+          if (p.chantier) grue(ctx, b.ox + 2.75, b.oy + 0.25, 0, s, Math.max(38, b.haut * 0.8));
           dessiner(ctx, { slug: p.slug, accent: p.accent, lumieres: p.lumieres, archive: p.archive }, { ...s, ox: b.ox, oy: b.oy });
-          if (p.chantier) grue(ctx, b.ox + 2.7, b.oy + 0.4, b.haut, s);
           apres(ctx, b);
         },
       });
     }
     return liste;
+  }
+
+  /** @param {string} id */
+  const accentQuartier = (id) => ACCENTS_QUARTIER[id] ?? ACCENTS_QUARTIER.autres;
+
+  /**
+   * Le liseré d'un quartier, sur l'axe des routes qui le bordent.
+   * @param {CanvasRenderingContext2D} ctx
+   * @param {{ x: number, y: number, w: number, h: number, id: string }} q
+   * @param {boolean} vif
+   */
+  function contourQuartier(ctx, q, vif) {
+    const coins = [proj(q.x + 0.5, q.y + 0.5), proj(q.x + q.w + 0.5, q.y + 0.5), proj(q.x + q.w + 0.5, q.y + q.h + 0.5), proj(q.x + 0.5, q.y + q.h + 0.5)];
+    ctx.beginPath();
+    coins.forEach(([x, y], i) => (i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)));
+    ctx.closePath();
+    if (vif) {
+      ctx.fillStyle = rgba(accentQuartier(q.id), 0.12);
+      ctx.fill();
+    }
+    ctx.strokeStyle = rgba(accentQuartier(q.id), vif ? 0.95 : 0.5);
+    ctx.lineWidth = vif ? 3 : 2;
+    ctx.stroke();
+  }
+
+  /**
+   * Le quartier sous un point du monde, s'il y en a un.
+   * @param {number} x
+   * @param {number} y
+   */
+  function quartierSous(x, y) {
+    const [gx, gy] = unproj(x, y);
+    return quartiers.find((q) => gx >= q.x + 0.5 && gx < q.x + q.w + 0.5 && gy >= q.y + 0.5 && gy < q.y + q.h + 0.5) ?? null;
+  }
+
+  /**
+   * Le point du monde où poser l'enseigne d'un quartier : au milieu de son bord avant, un peu en dehors.
+   * @param {{ x: number, y: number, w: number, h: number }} q
+   * @returns {[number, number]}
+   */
+  function enseigneQuartier(q) {
+    return proj(q.x + q.w / 2 + 0.5, q.y + q.h + 1.3);
   }
 
   /**
@@ -424,7 +463,7 @@ export function creerMonde(donnees) {
     return trouve;
   }
 
-  return { batiments, quartiers, W, H, decalage, marge, noeuds, boite, cadre, clientTuile, dessinerSol, objets, trouver, unproj };
+  return { batiments, quartiers, W, H, decalage, marge, noeuds, boite, cadre, clientTuile, dessinerSol, objets, trouver, unproj, accentQuartier, contourQuartier, quartierSous, enseigneQuartier };
 }
 
 /**

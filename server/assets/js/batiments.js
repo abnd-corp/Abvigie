@@ -792,10 +792,10 @@ function roue(ctx, r, couleur, angle) {
  * @param {number} gy
  * @param {number} z  la hauteur du pied de la grue
  * @param {Scene} s
+ * @param {number} [haut]  la hauteur du mât
  */
-export function grue(ctx, gx, gy, z, s) {
+export function grue(ctx, gx, gy, z, s, haut = 38) {
   const [x, y] = proj(gx, gy, z);
-  const haut = 38;
   const ang = s.anim ? Math.sin(s.t * 0.5) * 0.5 : 0.2;
   ctx.strokeStyle = '#f4b860';
   ctx.lineWidth = 2;
