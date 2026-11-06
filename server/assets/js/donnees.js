@@ -16,7 +16,7 @@
 /** @typedef {{ id: string, accomplie: boolean, a_traiter: string[] }} Quete */
 /**
  * @typedef {{
- *   version: number, genere_le: string, endormi_jours: number, niveau: number,
+ *   version: number, genere_le: string, endormi_jours: number,
  *   quartiers: { id: string, titre: string, n: number }[],
  *   projets: Projet[], acteurs: Acteur[], quetes: Quete[]
  * }} Donnees

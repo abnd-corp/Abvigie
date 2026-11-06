@@ -23,7 +23,7 @@ Le service fait deux choses seulement : **rafraîchir** (lire GitHub, recalculer
 | `sources/` | Lire des données brutes : `GitHub` (l'API REST, avec cache `ETag`) ou `Fixtures` (des fichiers). Un trait `Source` les unifie. | les règles, le HTML |
 | `collect.rs` | Transformer le brut en notions de la charte : niveau d'activité, jalon en retard, CI de référence, robot ou humain, acteurs. Produit un [`Etat`](donnees.md). | le HTML, le réseau |
 | `rules/` | Une règle d'alerte par fichier : elle regarde un projet et lève ou non un `Drapeau`. | le HTML, GitHub |
-| `progression.rs` | Les quêtes, l'XP et le niveau, calculés sur les projets et leurs drapeaux ([quetes.md](quetes.md)). | le HTML |
+| `progression.rs` | Les quêtes, calculées sur les projets et leurs drapeaux ([quetes.md](quetes.md)). | le HTML |
 | `catalogue.rs` | Pour chaque dépôt connu : nom affiché, quartier, couleur propre. | |
 | `render/` | Fabriquer les pages HTML (écran de jeu, fiche, fragment du panneau), les données de la carte, le SEO/GEO. | GitHub |
 | `site.rs` | Fabriquer **toutes** les pages d'un `Etat` et les ranger dans une table ; servir les modules JavaScript avec leur version. | |

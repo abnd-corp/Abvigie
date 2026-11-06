@@ -14,7 +14,7 @@ Les contraintes restent celles de l'ADR 0001 : léger, sûr, sans framework, év
 - **Le code est découpé en modules natifs** (`assets/js/`), un par responsabilité : projection, bâtiments, monde, personnages, caméra, chef d'orchestre, interface, vignettes. [carte.md](../carte.md) les décrit.
 - **Un bâtiment est décrit par des données** (des volumes assemblés et des détails nommés), pas par du code spécifique à chaque projet. Ajouter un bâtiment = ajouter une entrée.
 - **Rien d'essentiel n'est réservé à la carte.** Tout ce qu'elle montre existe aussi en HTML (quêtes, projets, journal, compteurs), rendu par le serveur ([ADR 0002](0002-rendu-cote-serveur.md)). La carte est un supplément : sans JavaScript, la page se lit à la suite ; un robot la lit comme avant.
-- **Un niveau et des quêtes**, calculés côté serveur sur des faits publics ([quetes.md](../quetes.md)), pour que le jeu ne mente pas et soit lisible par tous. L'XP est celui de la ville, jamais d'une personne (R27).
+- **Des quêtes**, calculées côté serveur sur des faits publics ([quetes.md](../quetes.md)), pour que le jeu ne mente pas et soit lisible par tous. Elles comptent des projets, jamais des personnes (R27). Un niveau et de l'XP ont été essayés puis retirés à la demande de l'équipe : trop de jeu pour un tableau de bord.
 - **La carte ne lit que `/api/carte.json`**, un résumé compact et versionné, incorporé dans la page.
 - **L'animation est économe** : 30 images par seconde en ambiance, 60 quand on agit, arrêt quand l'onglet est caché, aucune animation en mouvement réduit.
 

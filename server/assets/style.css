@@ -39,21 +39,15 @@ progress::-moz-progress-bar { background: linear-gradient(90deg, var(--menthe), 
 /* ---- l'écran de jeu ---- */
 body.jeu { block-size: 100dvh; display: grid; grid-template-rows: auto minmax(0, 1fr); overflow: hidden; }
 .hud {
-  display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem var(--e);
+  display: flex; flex-wrap: nowrap; align-items: center; justify-content: space-between; gap: 0.5rem var(--e);
   padding: 0.45rem max(var(--e), env(safe-area-inset-left)) 0.45rem max(var(--e), env(safe-area-inset-right));
   background: rgb(14 19 48 / 0.96); border-block-end: 1px solid var(--trait); position: relative; z-index: 5;
 }
-.marque { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--ambre); text-decoration: none; font: 800 clamp(1.15rem, 1rem + 0.8vw, 1.6rem) / 1 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; }
+.marque { display: inline-flex; flex: none; align-items: center; gap: 0.5rem; color: var(--ambre); text-decoration: none; font: 800 clamp(1.05rem, 0.9rem + 0.8vw, 1.5rem) / 1 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; }
 .logo { inline-size: 1.4em; block-size: 1.4em; color: var(--encre); }
 .lg-faisceau { fill: #ffd98a; opacity: 0.35; } .lg-tour, .lg-toit { fill: currentColor; } .lg-lanterne { fill: #ffd98a; }
-.slogan { color: var(--discret); font-size: 0.9em; }
-.niveau { display: inline-flex; align-items: center; gap: 0.5rem; margin-inline-start: auto; padding: 0.3rem 0.7rem; background: var(--carte); border: 1px solid var(--trait); border-radius: 0.5rem; font-family: var(--mono); }
-.niveau progress { inline-size: clamp(4rem, 12vw, 9rem); }
-.niveau strong { font-size: 1.15em; color: var(--ambre); }
-.mini-titre { color: var(--discret); font-size: 0.72em; letter-spacing: 0.08em; text-transform: uppercase; }
-.rang { font-weight: 700; } .xp { color: var(--discret); font-size: 0.85em; white-space: nowrap; }
-.compteurs { display: flex; flex-wrap: wrap; gap: 0.35rem; }
-.compteurs div { display: inline-flex; align-items: baseline; gap: 0.45rem; padding: 0.25rem 0.65rem; background: var(--carte); border: 1px solid var(--trait); border-radius: 0.5rem; font-family: var(--mono); }
+.compteurs { display: flex; flex-wrap: nowrap; gap: 0.35rem; min-inline-size: 0; }
+.compteurs div { display: inline-flex; align-items: baseline; gap: 0.4rem; padding: 0.25rem 0.6rem; background: var(--carte); border: 1px solid var(--trait); border-radius: 0.5rem; font-family: var(--mono); cursor: help; }
 .compteurs dt { color: var(--discret); font-size: 0.7em; letter-spacing: 0.08em; text-transform: uppercase; }
 .compteurs dd { font-weight: 800; font-size: 1.05em; }
 .c-alertes dd { color: var(--attention); }
@@ -71,7 +65,6 @@ body.jeu { block-size: 100dvh; display: grid; grid-template-rows: auto minmax(0,
 .zoom { position: absolute; inset-block-end: 0.7rem; inset-inline-start: 0.7rem; display: flex; gap: 0.35rem; }
 .zoom button { min-inline-size: 2.4rem; block-size: 2.4rem; padding-inline: 0.6rem; background: rgb(14 19 48 / 0.92); border: 1px solid var(--trait); border-radius: 0.5rem; font: 700 0.85em var(--mono); cursor: pointer; }
 .zoom button:hover { background: var(--carte2); }
-.aide { position: absolute; inset-block-end: 0.85rem; inset-inline: 0; margin-inline: auto; inline-size: max-content; max-inline-size: calc(100% - 22rem); text-align: center; font: 0.72em var(--mono); color: var(--discret); pointer-events: none; }
 
 /* ---- le panneau latéral ---- */
 .lateral { min-block-size: 0; overflow: auto; overscroll-behavior: contain; background: var(--panneau); border-inline-start: 1px solid var(--trait); padding-block-end: env(safe-area-inset-bottom); position: relative; }
@@ -160,14 +153,13 @@ body.fiche-page > * { max-inline-size: 64rem; margin-inline: auto; }
 @media (min-width: 100rem) { .jeu-zone { grid-template-columns: minmax(0, 1fr) 34rem; } }
 @media (max-width: 52rem), (orientation: portrait) and (max-width: 64rem) {
   /* téléphone ou tablette en portrait : la carte en haut, le panneau en dessous */
-  .jeu-zone { grid-template-columns: 1fr; grid-template-rows: minmax(15rem, 50dvh) minmax(0, 1fr); }
+  .jeu-zone { grid-template-columns: 1fr; grid-template-rows: minmax(14rem, min(50dvh, 95vw)) minmax(0, 1fr); }
   .lateral { border-inline-start: 0; border-block-start: 1px solid var(--trait); }
-  .slogan, .legende, .aide { display: none; }
-  .niveau { margin-inline-start: 0; }
+  .legende { display: none; }
   .fiche-tete { flex-direction: column; align-items: flex-start; }
 }
 @media (max-width: 34rem) {
-  .hud { gap: 0.3rem 0.5rem; } .compteurs div { padding: 0.2rem 0.5rem; }
+  .hud { gap: 0.4rem; } .compteurs { gap: 0.25rem; } .compteurs div { flex-direction: column; align-items: center; padding: 0.15rem 0.4rem; gap: 0; } .compteurs dt { font-size: 0.55em; letter-spacing: 0; white-space: nowrap; } .compteurs dd { font-size: 1em; line-height: 1.1; }
   .outils-carte { inset-inline-start: 0.5rem; justify-content: flex-start; } .outils-carte label { padding: 0.25rem 0.5rem; }
   .journal li { grid-template-columns: 1fr; gap: 0; }
 }
@@ -175,10 +167,10 @@ body.fiche-page > * { max-inline-size: 64rem; margin-inline: auto; }
   /* paysage de téléphone, fenêtre très basse : tout se serre, la carte garde la place */
   .jeu-zone { grid-template-columns: minmax(0, 1fr) min(22rem, 46vw); grid-template-rows: minmax(0, 1fr); }
   .lateral { border-block-start: 0; border-inline-start: 1px solid var(--trait); }
-  .hud { padding-block: 0.25rem; } .slogan, .legende, .aide { display: none; } .compteurs dt { display: none; }
+  .hud { padding-block: 0.25rem; } .legende { display: none; } .compteurs dt { display: none; }
   .marque { font-size: 1rem; }
 }
-@media (max-width: 20rem) { :root { --e: 0.5rem; } .carte article { flex-direction: column; } .vignette { inline-size: 4rem; } .niveau .rang { display: none; } }
+@media (max-width: 20rem) { :root { --e: 0.5rem; } .carte article { flex-direction: column; } .vignette { inline-size: 4rem; } .logo { display: none; } .marque { letter-spacing: 0.04em; } .compteurs div { padding-inline: 0.3rem; } }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; scroll-behavior: auto !important; } }
 @media (forced-colors: active) { .carte article, .quete, .compteurs div, .tuiles div { border-color: CanvasText; } progress { forced-color-adjust: none; } }
 @media print { .carte-zone, .filtres, .onglets, .o-case, .zoom { display: none !important; } body { background: #fff; color: #000; display: block; overflow: visible; block-size: auto; } .onglet { display: block !important; } }

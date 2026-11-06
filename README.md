@@ -6,7 +6,7 @@ Le tableau de bord public de l'organisation [Abnd](https://github.com/abnd-corp)
 - **Les fenêtres s'allument selon l'activité**, et un projet sans activité depuis 2 mois s'éteint (et se met à dormir : des « z » montent de son toit).
 - **Les fanions et les pointillés** montrent ce qui est à régler selon la [charte](https://github.com/abnd-corp/gouvernance/blob/main/CHARTE.md) : licence, description, topics, jalons, intégration continue, projets dormants. Une grue entoure un chantier à débloquer.
 - **Des personnages se promènent** : les personnes et les robots qui travaillent dans l'organisation, vus depuis leurs issues et pull requests.
-- **La ville a un niveau et des quêtes.** Les quêtes sont les objectifs de la charte à atteindre sur tous les projets ; elles se complètent d'elles-mêmes quand les faits changent. Survoler une quête éclaire sur la carte les projets qui lui restent à faire.
+- **La ville a des quêtes.** Les quêtes sont les objectifs de la charte à atteindre sur tous les projets ; elles se complètent d'elles-mêmes quand les faits changent. Survoler une quête éclaire sur la carte les projets qui lui restent à faire.
 
 > **État : une idée, pas encore une version.** Le prototype fonctionne en local avec des données de démonstration. Il n'y a pas encore de CI, d'image Docker ni d'hébergement : tout cela viendra avec la V0.1 ([issue #1](https://github.com/abnd-corp/Abvigie/issues/1)).
 
@@ -32,7 +32,7 @@ Un seul binaire Rust (environ 1,6 Mo) qui lit l'API publique de GitHub, calcule 
 |---|---|
 | Comprendre comment c'est fait | [docs/architecture.md](docs/architecture.md) |
 | La carte : le monde, les bâtiments, la caméra | [docs/carte.md](docs/carte.md) |
-| Les quêtes, l'XP et le niveau | [docs/quetes.md](docs/quetes.md) |
+| Les quêtes | [docs/quetes.md](docs/quetes.md) |
 | Le format des données (`/api/etat.json`, `/api/carte.json`) | [docs/donnees.md](docs/donnees.md) |
 | Les règles d'alerte et leur lien avec la charte | [docs/regles.md](docs/regles.md) |
 | **Ajouter** une règle, un bâtiment, une quête, une source | [règle](docs/ajouter-une-regle.md) · [bâtiment](docs/ajouter-un-immeuble.md) · [quête](docs/quetes.md#ajouter-une-quête) · [source](docs/ajouter-une-source.md) |
@@ -53,7 +53,7 @@ server/
     sources/         d'où viennent les données (GitHub, fichiers locaux)
     rules/           une règle d'alerte par fichier
     render/          les pages HTML, les données de la carte, le SEO
-    progression.rs   les quêtes, l'XP et le niveau
+    progression.rs   les quêtes
     collect.rs       transforme les données brutes en notions de la charte
     site.rs          fabrique toutes les pages d'un coup
     http.rs          le serveur HTTP, strict et minuscule

@@ -17,7 +17,6 @@ struct Carte<'a> {
     version: u32,
     genere_le: &'a str,
     endormi_jours: i64,
-    niveau: u32,
     quartiers: Vec<QuartierCarte>,
     projets: Vec<ProjetCarte<'a>>,
     acteurs: Vec<ActeurCarte<'a>>,
@@ -91,7 +90,6 @@ pub fn json(etat: &Etat, endormi_jours: i64) -> String {
         version: VERSION,
         genere_le: &etat.genere_le,
         endormi_jours,
-        niveau: etat.progression.niveau,
         quartiers: Quartier::TOUS
             .iter()
             .map(|q| QuartierCarte {

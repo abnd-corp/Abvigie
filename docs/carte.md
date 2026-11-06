@@ -22,8 +22,8 @@ La frontière importante : `iso.js` et `batiments.js` ne savent rien de la carte
 
 - Une **grille de tuiles** : une tuile fait 64 × 32 pixels à l'écran (un losange 2:1). Une position est `(gx, gy)` en tuiles, une hauteur `z` en pixels.
 - Une **parcelle** fait 3 × 3 tuiles de terrain, plus une tuile de route : 4 tuiles avec sa route. Un bâtiment vit dans sa parcelle.
-- Les projets sont rangés **par quartier** (les domaines de la charte : développement web, développement systèmes, outillage et gouvernance), chaque quartier en un bloc de parcelles. Les blocs sont posés sur des « étagères » de 8 parcelles de large.
-- Les **parcelles libres** deviennent des parcs, avec des arbres et, au plus près du centre, un étang. L'**emplacement du premier client** reste libre, en pointillés : la charte demande de s'y préparer avant le premier client.
+- Les projets sont rangés **par quartier** (les domaines de la charte : développement web, développement systèmes, outillage et gouvernance), chaque quartier en un bloc de parcelles. Les blocs sont rangés au plus compact : le code essaie plusieurs formes par quartier et garde la mise en page la moins étalée (`agencer` dans `monde.js`). Chaque bâtiment est posé sur un **socle**, sa parcelle dallée avec un liseré clair.
+- Les **parcelles libres** deviennent des parcs, avec des arbres. L'**emplacement du premier client** reste libre, en pointillés : la charte demande de s'y préparer avant le premier client.
 - Le nom de chaque quartier est écrit **à plat sur la route** qui le borde.
 
 ## Un bâtiment
@@ -46,13 +46,13 @@ Quelques fenêtres vacillent : elles s'éteignent un instant, selon un nombre ti
 
 Les auteurs des issues et pull requests ouvertes : **8 personnes et 4 robots au plus**, les plus actifs d'abord. Ce sont des **identifiants GitHub publics**, rien d'autre n'est lu. Ils marchent le long des routes. Leur pseudo s'affiche quand on les survole, ou toujours si l'option « Noms » est active et que la carte est assez zoomée.
 
-L'XP et le niveau sont ceux **de la ville**, jamais d'une personne (charte, R27 : on n'évalue pas les gens). Un personnage ne rapporte rien et ne coûte rien.
+Un personnage ne rapporte rien et ne coûte rien : les quêtes comptent des projets, jamais des personnes (charte, R27 : on n'évalue pas les gens).
 
 ## L'interaction
 
 | Geste | Effet |
 |---|---|
-| glisser | déplacer la carte, avec un peu d'inertie |
+| glisser | déplacer la carte, avec un peu d'inertie (le geste n'est pas expliqué à l'écran : il va de soi) |
 | molette, ou pincement à deux doigts | zoomer autour du curseur |
 | `+`, `-`, flèches (carte au focus) | zoomer, se déplacer |
 | survoler | contour du bâtiment et infobulle (nom, activité, issues, PR, alertes) |

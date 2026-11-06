@@ -1,10 +1,10 @@
-# Les quêtes, l'XP et le niveau
+# Les quêtes
 
-La ville a un **niveau**, qui monte quand les projets respectent la charte. C'est ce qui donne un côté jeu à un tableau de bord, sans rien cacher : chaque chiffre vient de faits publics de GitHub.
+Les **quêtes** donnent un côté jeu à un tableau de bord, sans rien cacher : chaque chiffre vient de faits publics de GitHub.
 
 ## Les quêtes
 
-Une **quête** est un objectif de la charte à atteindre sur **tous** les projets (non archivés). Chaque projet qui le remplit rapporte des points à la ville. Rien ne se coche à la main : quand un fait change sur GitHub, la quête avance à la lecture suivante.
+Une **quête** est un objectif de la charte à atteindre sur **tous** les projets (non archivés). La quête affiche combien de projets la remplissent déjà. Rien ne se coche à la main : quand un fait change sur GitHub, la quête avance à la lecture suivante.
 
 | Quête | Charte | Points par projet | Un projet la remplit quand |
 |---|---|---|---|
@@ -19,28 +19,11 @@ Une **quête** est un objectif de la charte à atteindre sur **tous** les projet
 
 La plupart de ces quêtes sont **l'inverse d'une règle d'alerte** ([regles.md](regles.md)) : un projet remplit la quête quand la règle ne lève pas de drapeau. C'est voulu : un seul endroit dit ce qui ne va pas, et la quête dit ce qu'il reste à faire.
 
-## L'XP et le niveau
-
-- **XP** = la somme, sur toutes les quêtes, de `projets qui la remplissent × points`.
-- **XP maximal** = ce qu'on aurait si tous les projets remplissaient toutes les quêtes.
-- Le **niveau** dépend de la part d'XP maximal atteinte :
-
-| Niveau | Rang | Entre à |
-|---|---|---|
-| 1 | Hameau | 0 % |
-| 2 | Village | 15 % |
-| 3 | Bourg | 30 % |
-| 4 | Ville | 45 % |
-| 5 | Cité | 60 % |
-| 6 | Métropole | 75 % |
-| 7 | Capitale | 90 % |
-
-Un projet **archivé** ne compte pas : il est à l'arrêt volontairement. L'XP est celui **de l'organisation, jamais d'une personne** : la charte interdit d'évaluer les gens (R27).
+Un projet **archivé** ne compte pas : il est à l'arrêt volontairement. Une quête compte des **projets**, jamais des personnes : la charte interdit d'évaluer les gens (R27).
 
 ## Où on les voit
 
-- **La barre du haut** : le niveau, son rang, la barre vers le niveau suivant, l'XP.
-- **L'onglet Fiche** : la prochaine quête, celle qui rapporterait le plus d'XP si on la finissait.
+- **L'onglet Fiche** : la prochaine quête, celle qui a le plus de projets à traiter.
 - **L'onglet Quêtes** : toutes les quêtes, leur progression, et les projets qui leur restent à faire (des liens).
 - **Sur la carte** : survoler une quête fait pulser en ambre le contour des bâtiments qui lui restent à faire ; cliquer une quête l'épingle, pour garder l'éclairage en déplaçant la souris.
 - **Dans `llms.txt` et `/api/etat.json`** : les mêmes chiffres, pour les machines.
@@ -55,16 +38,13 @@ Definition {
     titre: "Une politique de sécurité partout",
     description: "Chaque dépôt a un fichier SECURITY.md.",
     regle: "R9",                                       // la règle de la charte, ou ""
-    points: 10,
     ok: |p| !drapeau(p, "securite_absente"),           // le projet remplit-il l'objectif ?
 },
 ```
 
 1. Si la quête repose sur un fait qu'aucune règle ne regarde encore, **écrire d'abord la règle** ([ajouter-une-regle.md](ajouter-une-regle.md)), puis s'en servir ici avec `drapeau(p, "code")`.
 2. Ajouter la ligne au tableau ci-dessus.
-3. `cargo test` : les tests de `progression.rs` vérifient que les niveaux restent cohérents. Si la quête change beaucoup d'XP, relire les seuils : le niveau d'aujourd'hui peut bouger.
-
-Les points disent l'importance relative : 15 pour ce qui bloque (la CI), 10 pour la conformité qui engage, 5 pour l'hygiène.
+3. `cargo test`.
 
 ## Pourquoi pas de cases à cocher
 

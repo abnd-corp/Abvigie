@@ -6,7 +6,7 @@
 
 | Élément | Où | Pourquoi |
 |---|---|---|
-| **Contenu dans le HTML** | `render/` | tout est rendu côté serveur : un robot qui n'exécute pas de JavaScript voit les projets, leurs alertes, les quêtes, le niveau et le journal. **La carte est un canvas, invisible pour un robot : c'est pourquoi rien d'essentiel n'y est réservé** |
+| **Contenu dans le HTML** | `render/` | tout est rendu côté serveur : un robot qui n'exécute pas de JavaScript voit les projets, leurs alertes, les quêtes et le journal. **La carte est un canvas, invisible pour un robot : c'est pourquoi rien d'essentiel n'y est réservé** |
 | Une **page par projet** | `/projets/<slug>` | une URL stable à indexer et à citer par projet |
 | HTML sémantique | `header`, `main`, `section`, `article`, `nav`, `footer`, titres `h1` à `h3` sans saut | le plan du document est lisible par une machine |
 | `<title>` et `description` uniques | chaque page | un titre et un résumé propres à chaque projet |
@@ -15,7 +15,7 @@
 | Open Graph et Twitter Card | `<head>` | un aperçu soigné quand on colle le lien (`/assets/og.png`, 1200 × 630) |
 | **`/sitemap.xml`** | généré | tous les projets, avec leur date de dernière modification |
 | **`/robots.txt`** | généré | tout est ouvert ; l'API est exclue ; le plan du site est annoncé |
-| **`/llms.txt`** | généré | un résumé Markdown du site à destination des assistants IA : ce que c'est, les chiffres du jour, le niveau de la ville et ses quêtes, la liste des projets avec une phrase chacun, comment lire les signaux |
+| **`/llms.txt`** | généré | un résumé Markdown du site à destination des assistants IA : ce que c'est, les chiffres du jour, les quêtes de la ville, la liste des projets avec une phrase chacun, comment lire les signaux |
 | **`/api/etat.json`** | généré | les mêmes données, structurées et versionnées ([donnees.md](donnees.md)) |
 | `lang="fr"`, `og:locale` | `<head>` | langue déclarée |
 | Vitesse | [performance.md](performance.md) | la page elle-même fait 7 Ko compressés ; le JavaScript de la carte (30 Ko) est chargé en module, mis en cache un an, et n'empêche rien d'être lu |

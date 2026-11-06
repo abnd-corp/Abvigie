@@ -69,7 +69,7 @@ export const DESCRIPTIONS = {
       { t: 'box', x: 0.2, y: 0.2, w: 2.6, d: 1.5, h: 24 },
       { t: 'gable', x: 0.2, y: 0.2, w: 2.6, d: 1.5, z: 24, h: 14, crete: 'x', c: 'toit' },
     ],
-    deco: ['riviere:0,2.1,3,0.7', 'baies:1.5,0.5,38'],
+    deco: ['canal:0.2,2.15,2.6,0.5', 'baies:1.5,0.5,38'],
   },
   // des loueurs, sur une carte : une épingle qui flotte au-dessus du toit
   abloue: {
@@ -654,17 +654,20 @@ const DETAILS = {
     void accent;
   },
 
-  // une rivière de fichiers : des petits carrés qui descendent le courant
-  riviere(ctx, a, n, { s, accent, vif }) {
+  // un canal de données : une gouttière d'acier où des chevrons défilent dans le sens du flux
+  canal(ctx, a, n, { s, accent, vif }) {
     const [x, y, w, d] = n;
-    /** @type {[number, number][]} */
-    const lit = [proj(s.ox + x, s.oy + y, 1), proj(s.ox + x + w, s.oy + y, 1), proj(s.ox + x + w, s.oy + y + d, 1), proj(s.ox + x, s.oy + y + d, 1)];
-    polygone(ctx, lit, 'rgba(70,130,220,0.32)', rgba(accent, 0.45));
-    for (let i = 0; i < 6; i++) {
-      const p = s.anim && vif ? (s.t * 0.22 + i / 6) % 1 : i / 6;
-      const [px, py] = proj(s.ox + x + 0.1 + p * (w - 0.2), s.oy + y + d / 2 + Math.sin(i * 2 + (s.anim ? s.t : 0)) * 0.12, 5);
-      ctx.fillStyle = i % 2 ? '#ffe9a8' : accent;
-      ctx.fillRect(px - 3.5, py - 3.5, 7, 7);
+    boite(ctx, { x: s.ox + x, y: s.oy + y, w, d, z: 0, h: 3 }, couleursDe('#2b3568'));
+    for (let i = 0; i < 4; i++) {
+      const p = s.anim && vif ? (s.t * 0.3 + i / 4) % 1 : i / 4;
+      const [px, py] = proj(s.ox + x + 0.2 + p * (w - 0.4), s.oy + y + d / 2, 4);
+      ctx.fillStyle = rgba(accent, vif ? 0.45 + 0.5 * Math.sin(p * Math.PI) : 0.2);
+      ctx.beginPath();
+      ctx.moveTo(px + 7, py);
+      ctx.lineTo(px - 3, py - 4);
+      ctx.lineTo(px - 3, py + 4);
+      ctx.closePath();
+      ctx.fill();
     }
   },
 

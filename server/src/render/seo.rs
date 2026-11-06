@@ -133,10 +133,7 @@ pub fn llms(r: &Rendu) -> String {
         e.resume.alertes
     ));
     let prog = &e.progression;
-    s.push_str(&format!(
-        "La ville est au niveau {} (« {} »), {} XP sur {}. Les quêtes sont les objectifs de la charte à atteindre sur tous les projets :\n",
-        prog.niveau, prog.titre, prog.xp, prog.xp_max
-    ));
+    s.push_str("Les quêtes sont les objectifs de la charte à atteindre sur tous les projets :\n");
     for q in &prog.quetes {
         s.push_str(&format!(
             "- {} ({}) : {} sur {} projets\n",

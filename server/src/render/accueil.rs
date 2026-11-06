@@ -44,44 +44,20 @@ pub fn page(r: &Rendu) -> String {
     document(r, &meta, &h)
 }
 
-/// La barre du haut : marque, niveau et compteurs.
+/// La barre du haut, sur une seule ligne : la marque et quatre compteurs. Chacun dit en bulle ce qu'il compte.
 fn hud(e: &Etat) -> String {
-    let p = &e.progression;
     let humains = e.acteurs.iter().filter(|a| !a.robot).count();
     let robots = e.acteurs.len() - humains;
-    let dans_niveau = p.xp.saturating_sub(p.xp_debut);
-    let (valeur, max) = match p.xp_suivant {
-        Some(s) => (dans_niveau, (s - p.xp_debut).max(1)),
-        None => (1, 1),
-    };
-    let reste = match p.xp_suivant {
-        Some(s) => format!(
-            "encore {} XP pour « {} »",
-            s.saturating_sub(p.xp),
-            suivant(p.niveau)
-        ),
-        None => "niveau maximal".to_string(),
-    };
     format!(
         "<header class=\"hud\"><a class=\"marque\" href=\"/\" aria-label=\"Abvigie, accueil\">{LOGO}<span>Abvigie</span></a>\
-         <p class=\"slogan\">L'organisation Abnd, vue comme une ville</p>\
-         <div class=\"niveau\" title=\"{reste}\"><span class=\"mini-titre\">Niveau</span><strong>{}</strong><span class=\"rang\">{}</span>\
-         <progress max=\"{max}\" value=\"{valeur}\" aria-label=\"Progression vers le niveau suivant\"></progress><span class=\"xp\">{} XP</span></div>\
          <dl class=\"compteurs\">\
-         <div><dt>Projets</dt><dd>{}</dd></div>\
-         <div><dt>Équipe</dt><dd>{humains}</dd></div>\
-         <div><dt>Robots</dt><dd>{robots}</dd></div>\
-         <div class=\"c-alertes\"><dt>Alertes</dt><dd>{}</dd></div>\
+         <div title=\"Dépôts de l'organisation, un bâtiment chacun\"><dt>Projets</dt><dd>{}</dd></div>\
+         <div title=\"Personnes qui ont ouvert une issue ou une pull request en cours (identifiants GitHub publics)\"><dt>Équipe</dt><dd>{humains}</dd></div>\
+         <div title=\"Automatisations qui ont ouvert une pull request en cours (Dependabot, GitHub Actions…)\"><dt>Robots</dt><dd>{robots}</dd></div>\
+         <div class=\"c-alertes\" title=\"Choses à régler selon la charte, tous projets confondus\"><dt>Alertes</dt><dd>{}</dd></div>\
          </dl></header>",
-        p.niveau, p.titre, p.xp, e.resume.projets, e.resume.alertes
+        e.resume.projets, e.resume.alertes
     )
-}
-
-fn suivant(niveau: u32) -> &'static str {
-    ["Village", "Bourg", "Ville", "Cité", "Métropole", "Capitale"]
-        .get(niveau as usize - 1)
-        .copied()
-        .unwrap_or("?")
 }
 
 /// La zone de la carte : le canvas, ses réglages, sa légende. Le canvas reste vide sans JavaScript.
@@ -101,7 +77,7 @@ fn zone_carte(e: &Etat) -> String {
          <div class=\"zoom\"><button type=\"button\" data-zoom=\"1\" aria-label=\"Zoomer\">+</button>\
          <button type=\"button\" data-zoom=\"-1\" aria-label=\"Dézoomer\">−</button>\
          <button type=\"button\" data-zoom=\"0\">Recentrer</button></div>\
-         <p class=\"aide\">Glisse pour te déplacer · molette ou +/− pour zoomer · clique un bâtiment</p></section>",
+         </section>",
         e.projets.len()
     )
 }
@@ -182,12 +158,11 @@ fn fiche(r: &Rendu) -> String {
         let _ = write!(
             h,
             "<div class=\"prochaine\"><p class=\"sur\">Prochaine quête</p><p class=\"titre-q\">{}</p>\
-             <p class=\"menu\">{}/{} faits · +{} XP par projet</p><progress max=\"{}\" value=\"{}\" aria-label=\"Progression de la quête\"></progress>\
+             <p class=\"menu\">{}/{} projets en règle</p><progress max=\"{}\" value=\"{}\" aria-label=\"Progression de la quête\"></progress>\
              <p><label class=\"lien\" for=\"o-quetes\">Voir toutes les quêtes →</label></p></div>",
             esc(q.titre),
             q.fait,
             q.total,
-            q.points,
             q.total.max(1),
             q.fait
         );
@@ -201,18 +176,18 @@ fn fiche(r: &Rendu) -> String {
          <li><a href=\"/api/etat.json\">Les données en JSON</a></li>\
          <li><a href=\"/llms.txt\">Résumé pour les assistants IA (llms.txt)</a></li></ul>\
          <p class=\"menu\">Les données viennent de l'API publique de GitHub, sans aucune donnée privée, et sont relues toutes les {} minutes. \
-         Les personnages sont des identifiants GitHub publics, vus dans les issues et pull requests ouvertes.</p>",
+         L'équipe compte les personnes distinctes (identifiants GitHub publics) vues dans les issues et pull requests ouvertes, les robots les automatisations qui en ouvrent.</p>",
         r.config.rafraichir_secondes / 60
     );
     h
 }
 
-/// La quête à mettre en avant : celle qui rapporterait le plus d'XP si on la finissait.
+/// La quête à mettre en avant : celle qui a le plus de projets à traiter.
 fn prochaine(p: &Progression) -> Option<&Quete> {
     p.quetes
         .iter()
         .filter(|q| !q.accomplie())
-        .max_by_key(|q| q.points as usize * (q.total - q.fait))
+        .max_by_key(|q| q.total - q.fait)
 }
 
 fn quetes(p: &Progression) -> String {
@@ -220,16 +195,15 @@ fn quetes(p: &Progression) -> String {
         String::from("<p class=\"sur\">Journal de quêtes</p><h2>Les objectifs de la charte</h2>");
     let _ = write!(
         h,
-        "<p>Une quête est un objectif à atteindre sur <strong>tous</strong> les projets. Chaque projet qui le remplit rapporte de l'XP à la ville. \
-         Rien ne se coche à la main : quand un fait change sur GitHub, la quête avance. {} XP sur {} pour l'instant.</p>",
-        p.xp, p.xp_max
+        "<p>Une quête est un objectif à atteindre sur <strong>tous</strong> les projets. Rien ne se coche à la main : \
+         quand un fait change sur GitHub, la quête avance.</p>"
     );
     for q in &p.quetes {
         let classe = if q.accomplie() { " faite" } else { "" };
         let _ = write!(
             h,
             "<article class=\"quete{classe}\" data-quete=\"{}\" data-projets=\"{}\"><h3>{}{} <span class=\"regle\">{}</span></h3><p class=\"menu\">{}</p>\
-             <progress max=\"{}\" value=\"{}\" aria-label=\"Progression\"></progress><p class=\"avance\">{}/{} · +{} XP par projet</p>",
+             <progress max=\"{}\" value=\"{}\" aria-label=\"Progression\"></progress><p class=\"avance\">{}/{} projets en règle</p>",
             q.id,
             esc(&q.a_traiter.join(" ")),
             if q.accomplie() { "✓ " } else { "" },
@@ -240,7 +214,6 @@ fn quetes(p: &Progression) -> String {
             q.fait,
             q.fait,
             q.total,
-            q.points,
         );
         if !q.a_traiter.is_empty() {
             h.push_str("<p class=\"a-faire\">À faire : ");

@@ -617,7 +617,6 @@ mod tests {
         assert_eq!(carte["version"], 1);
         assert!(carte["projets"].as_array().unwrap().len() >= 10);
         assert!(!carte["quetes"].as_array().unwrap().is_empty());
-        assert!((1..=7).contains(&carte["niveau"].as_u64().unwrap()));
         // ni jeton ni donnée privée : seulement des champs prévus
         let texte = carte.to_string();
         assert!(!texte.contains("ghp_") && !texte.contains("Bearer"));

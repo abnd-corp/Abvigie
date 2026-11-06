@@ -23,32 +23,15 @@ pub struct Etat {
     pub projets: Vec<Projet>,
 }
 
-/// Le niveau de la ville, calculé sur des faits publics : plus les projets respectent la charte, plus la ville monte.
+/// Les quêtes de la ville : les objectifs de la charte, avec l'avancement de chacun.
 #[derive(Debug, Clone, Serialize)]
 pub struct Progression {
-    pub niveau: u32,
-    pub titre: &'static str,
-    pub xp: u32,
-    /// XP si tous les projets avaient accompli toutes les quêtes.
-    pub xp_max: u32,
-    /// XP où a commencé le niveau actuel.
-    pub xp_debut: u32,
-    /// XP du niveau suivant ; absent au dernier niveau.
-    pub xp_suivant: Option<u32>,
     pub quetes: Vec<Quete>,
 }
 
 impl Progression {
     pub fn vide() -> Progression {
-        Progression {
-            niveau: 1,
-            titre: "Hameau",
-            xp: 0,
-            xp_max: 0,
-            xp_debut: 0,
-            xp_suivant: None,
-            quetes: Vec::new(),
-        }
+        Progression { quetes: Vec::new() }
     }
 }
 
@@ -60,8 +43,6 @@ pub struct Quete {
     pub titre: &'static str,
     pub description: &'static str,
     pub regle: &'static str,
-    /// XP gagnés par projet qui remplit l'objectif.
-    pub points: u32,
     pub fait: usize,
     pub total: usize,
     /// Les projets qui n'y sont pas encore (leurs `slug`), à éclairer sur la carte.

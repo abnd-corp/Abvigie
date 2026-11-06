@@ -11,9 +11,8 @@ Tout ce que la page affiche vient d'un seul objet, `Etat` (`server/src/model.rs`
   "organisation": "abnd-corp",
   "resume": { "projets": 16, "actifs": 16, "endormis": 0, "alertes": 24, "chantiers": 6 },
   "avertissements": [],                 // ce qui n'a pas pu être lu ; vide quand tout va bien
-  "progression": {                      // le niveau de la ville : voir quetes.md
-    "niveau": 5, "titre": "Cité", "xp": 655, "xp_max": 1040, "xp_debut": 624, "xp_suivant": 780,
-    "quetes": [ { "id": "licences", "titre": "…", "regle": "R20", "points": 10, "fait": 6, "total": 16, "a_traiter": ["abcarte", "…"] } ]
+  "progression": {                      // les quêtes de la ville : voir quetes.md
+    "quetes": [ { "id": "licences", "titre": "…", "regle": "R20", "fait": 6, "total": 16, "a_traiter": ["abcarte", "…"] } ]
   },
   "acteurs": [ { "login": "hugolagouardat", "robot": false, "activite": 12 } ],   // les personnages de la carte
   "projets": [
