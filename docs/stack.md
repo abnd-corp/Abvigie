@@ -7,7 +7,7 @@ Fiche demandée par la charte (R39) : les versions utilisées et où lire leurs 
 | Outil | Version | Usage | Notes de version |
 |---|---|---|---|
 | Rust | 1.99.1 (édition 2024, `rust-version = "1.85"`) | le service | https://github.com/rust-lang/rust/blob/master/RELEASES.md |
-| TypeScript (`tsc`) | 7.0.2 | **vérification seulement** des types de `app.js`, jamais à l'exécution | https://github.com/microsoft/TypeScript/releases |
+| TypeScript (`tsc`) | 7.0.2 | **vérification seulement** des types des modules de `assets/js/`, jamais à l'exécution | https://github.com/microsoft/TypeScript/releases |
 | `cargo-deny`, `cargo-audit` | derniers | licences, sources et avis de sécurité | https://github.com/EmbarkStudios/cargo-deny · https://github.com/rustsec/rustsec |
 | `gh`, `jq` | derniers | capture des données de démonstration | https://github.com/cli/cli/releases |
 

@@ -30,7 +30,7 @@ Une seconde vue, **protégée par authentification**, qui montre en plus ce que 
 
 - Le trait `Source` isole la provenance des données : une source de plus ne touche ni aux règles ni aux pages.
 - Les règles sont des fichiers isolés : « domaine qui expire dans 30 jours » (R30) ou « client sans déploiement tracé » (R32) seraient de nouvelles règles.
-- Le catalogue et le sprite supportent de nouveaux types de bâtiments (un « quartier » Clients, par exemple).
+- Le catalogue et les descriptions de bâtiments (`batiments.js`) supportent de nouveaux types de bâtiments (un « quartier » Clients, par exemple).
 
 ## Ce qui reste à construire
 
