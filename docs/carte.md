@@ -36,7 +36,7 @@ Ce qui vient des données :
 |---|---|
 | activité (`lumieres`, de 0 à 4) | la part de fenêtres allumées ; à 0, le bâtiment est éteint (corps sombre) et des « z » montent de son toit |
 | gravité du drapeau le plus grave | un fanion qui flotte, rouge, ambre ou vert, avec le nombre d'alertes |
-| `chantier` | une grue sur le toit et des pointillés au sol |
+| `chantier` | une grue au sol derrière le bâtiment et des pointillés autour |
 | quête survolée | un contour ambre qui pulse au sol |
 | projet ouvert | un contour vert au sol, et la caméra s'approche |
 
