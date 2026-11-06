@@ -24,7 +24,7 @@ La frontière importante : `iso.js` et `batiments.js` ne savent rien de la carte
 - Une **parcelle** fait 3 × 3 tuiles de terrain, plus une tuile de route : 4 tuiles avec sa route. Un bâtiment vit dans sa parcelle.
 - Les projets sont rangés **par quartier** (les domaines de la charte : développement web, développement systèmes, outillage et gouvernance), chaque quartier en un bloc de parcelles. Les blocs sont posés sur des « étagères » de 8 parcelles de large.
 - Les **parcelles libres** deviennent des parcs, avec des arbres et, au plus près du centre, un étang. L'**emplacement du premier client** reste libre, en pointillés : la charte demande de s'y préparer avant le premier client.
-- Chaque quartier a un **liseré** à sa couleur sur les routes qui le bordent, un sol un peu plus teinté et une **enseigne** (une pastille avec son nom) au milieu de son bord avant. L'enseigne reste toujours dans l'écran. Survoler l'enseigne ou le sol du quartier éclaire son liseré et affiche son nombre de projets, d'actifs et d'alertes.
+- Chaque quartier a un **liseré** à sa couleur sur les routes qui le bordent, un sol un peu plus teinté, et son **nom écrit à plat** sur une bande colorée de la rue de son bord avant, comme « premier client ». Le nom est dessiné par-dessus les bâtiments (`dessinerNoms` dans `monde.js`) pour que rien ne le cache. Survoler le quartier, rue comprise, éclaire son liseré et affiche son nombre de projets, d'actifs et d'alertes.
 
 ## Un bâtiment
 

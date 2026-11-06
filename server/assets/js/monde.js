@@ -23,6 +23,7 @@ export const LOT = 4;
  *   ox: number, oy: number,
  *   hull: [number, number][],
  *   ancre: [number, number],
+ *   pied: [number, number],
  *   profondeur: number,
  *   haut: number
  * }} Batiment
@@ -35,7 +36,7 @@ const COULEURS_QUARTIER = /** @type {Record<string, string>} */ ({
   autres: '#343b68',
 });
 
-/** La couleur d'accent de chaque quartier : son liseré et son enseigne. */
+/** La couleur d'accent de chaque quartier : son liseré et son nom. */
 const ACCENTS_QUARTIER = /** @type {Record<string, string>} */ ({
   web: '#86a2ff',
   systemes: '#5fd0e6',
@@ -96,6 +97,7 @@ export function creerMonde(donnees) {
         oy,
         hull: enveloppe(coins),
         ancre: proj(ox + e.x + e.w / 2, oy + e.y + e.d / 2, e.h),
+        pied: proj(ox + e.x + e.w, oy + e.y + e.d, 0),
         profondeur: ox + e.x + e.w + (oy + e.y + e.d),
         haut: e.h,
       });
@@ -120,6 +122,7 @@ export function creerMonde(donnees) {
     b.oy += decalage;
     b.hull = b.hull.map(([x, y]) => /** @type {[number, number]} */ ([x + proj(decalage, decalage)[0], y + proj(decalage, decalage)[1]]));
     b.ancre = [b.ancre[0] + proj(decalage, decalage)[0], b.ancre[1] + proj(decalage, decalage)[1]];
+    b.pied = [b.pied[0] + proj(decalage, decalage)[0], b.pied[1] + proj(decalage, decalage)[1]];
     b.profondeur += decalage * 2;
   }
   for (const q of quartiers) {
@@ -286,6 +289,16 @@ export function creerMonde(donnees) {
     ctx.stroke();
     ctx.setLineDash([]);
 
+    // une bande à la couleur de chaque quartier sur la rue de son bord avant ; son nom y est écrit par `dessinerNoms`
+    for (const q of quartiers) {
+      const vif = s.quartier === q.id;
+      const couleur = accentQuartier(q.id);
+      const x0 = q.x + 1;
+      const y0 = q.y + q.h;
+      const longueur = q.w - 1;
+      polygone(ctx, [proj(x0, y0 + 0.08), proj(x0 + longueur, y0 + 0.08), proj(x0 + longueur, y0 + 0.92), proj(x0, y0 + 0.92)], rgba(couleur, vif ? 0.4 : 0.26), rgba(couleur, vif ? 0.95 : 0.6));
+    }
+
     // l'étang du parc : de l'eau qui ondule doucement
     if (etang) {
       const ex = etang.cx * LOT + decalage + 1;
@@ -407,6 +420,46 @@ export function creerMonde(donnees) {
     return liste;
   }
 
+  /**
+   * Le nom de chaque quartier, à plat sur sa bande de rue, comme « premier client ». Dessiné par-dessus les bâtiments,
+   * pour que rien ne le cache.
+   * @param {CanvasRenderingContext2D} ctx
+   * @param {Scene} s
+   */
+  function dessinerNoms(ctx, s) {
+    for (const q of quartiers) {
+      const vif = s.quartier === q.id;
+      const x0 = q.x + 1;
+      const y0 = q.y + q.h;
+      const longueur = q.w - 1;
+      ctx.save();
+      const [x, y] = proj(x0, y0);
+      ctx.translate(x, y);
+      ctx.transform(1, 0.5, -1, 0.5, 0, 0);
+      const texte = q.titre.toUpperCase();
+      const police = (/** @type {number} */ t) => `800 ${t}px ui-monospace, SFMono-Regular, Menlo, monospace`;
+      let taille = 21;
+      ctx.font = police(taille);
+      if ('letterSpacing' in ctx) ctx.letterSpacing = '3px';
+      const dispo = longueur * 32 - 20;
+      const mesure = ctx.measureText(texte).width;
+      if (mesure > dispo) {
+        taille = Math.max(8, Math.floor((taille * dispo) / mesure));
+        ctx.font = police(taille);
+      }
+      const largeur = Math.min(ctx.measureText(texte).width, dispo);
+      ctx.textBaseline = 'middle';
+      ctx.lineJoin = 'round';
+      ctx.lineWidth = 4;
+      ctx.strokeStyle = 'rgba(10,14,38,0.85)';
+      const gauche = 10 + (dispo - largeur) / 2;
+      ctx.strokeText(texte, gauche, 16);
+      ctx.fillStyle = vif ? '#ffffff' : accentQuartier(q.id);
+      ctx.fillText(texte, gauche, 16);
+      ctx.restore();
+    }
+  }
+
   /** @param {string} id */
   const accentQuartier = (id) => ACCENTS_QUARTIER[id] ?? ACCENTS_QUARTIER.autres;
 
@@ -417,7 +470,7 @@ export function creerMonde(donnees) {
    * @param {boolean} vif
    */
   function contourQuartier(ctx, q, vif) {
-    const coins = [proj(q.x + 0.5, q.y + 0.5), proj(q.x + q.w + 0.5, q.y + 0.5), proj(q.x + q.w + 0.5, q.y + q.h + 0.5), proj(q.x + 0.5, q.y + q.h + 0.5)];
+    const coins = [proj(q.x + 0.5, q.y + 0.5), proj(q.x + q.w + 0.5, q.y + 0.5), proj(q.x + q.w + 0.5, q.y + q.h + 0.95), proj(q.x + 0.5, q.y + q.h + 0.95)];
     ctx.beginPath();
     coins.forEach(([x, y], i) => (i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)));
     ctx.closePath();
@@ -437,16 +490,8 @@ export function creerMonde(donnees) {
    */
   function quartierSous(x, y) {
     const [gx, gy] = unproj(x, y);
-    return quartiers.find((q) => gx >= q.x + 0.5 && gx < q.x + q.w + 0.5 && gy >= q.y + 0.5 && gy < q.y + q.h + 0.5) ?? null;
-  }
-
-  /**
-   * Le point du monde où poser l'enseigne d'un quartier : au milieu de son bord avant, un peu en dehors.
-   * @param {{ x: number, y: number, w: number, h: number }} q
-   * @returns {[number, number]}
-   */
-  function enseigneQuartier(q) {
-    return proj(q.x + q.w / 2 + 0.5, q.y + q.h + 1.3);
+    // le quartier comprend la rue de son bord avant, où est écrit son nom
+    return quartiers.find((q) => gx >= q.x + 0.5 && gx < q.x + q.w + 0.5 && gy >= q.y + 0.5 && gy < q.y + q.h + 1) ?? null;
   }
 
   /**
@@ -463,7 +508,7 @@ export function creerMonde(donnees) {
     return trouve;
   }
 
-  return { batiments, quartiers, W, H, decalage, marge, noeuds, boite, cadre, clientTuile, dessinerSol, objets, trouver, unproj, accentQuartier, contourQuartier, quartierSous, enseigneQuartier };
+  return { batiments, quartiers, W, H, decalage, marge, noeuds, boite, cadre, clientTuile, dessinerSol, dessinerNoms, objets, trouver, unproj, accentQuartier, contourQuartier, quartierSous };
 }
 
 /**

@@ -21,7 +21,7 @@ import { boite, couleursDe, cylindre, dome, hash, melange, nuance, ombre, pignon
  */
 /**
  * Le contexte d'un dessin : où, quand, et si l'on anime.
- * @typedef {{ ox: number, oy: number, t: number, anim: boolean, zoom: number }} Scene
+ * @typedef {{ ox: number, oy: number, t: number, anim: boolean, zoom: number, quartier?: string | null }} Scene
  */
 
 const AMBRE = '#ffc75f';

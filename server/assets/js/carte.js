@@ -38,8 +38,7 @@ async function demarrer() {
     /** @type {Batiment | null} */ survol: null,
     /** @type {ReturnType<typeof acteurs.trouver>} */ survolActeur: null,
     /** @type {import('./monde.js').Quartier | null} */ quartier: null,
-    /** Les enseignes de quartier telles que dessinées, en pixels d'écran, pour savoir si la souris est dessus. */
-    /** @type {{ q: import('./monde.js').Quartier, x: number, y: number, l: number, h: number }[]} */ enseignes: [],
+
     /** @type {string | null} */ selection: null,
     /** @type {Set<string>} */ surligne: new Set(),
     curseur: { x: 0, y: 0 },
@@ -141,7 +140,7 @@ async function demarrer() {
     ctx.translate(camera.largeur / 2, camera.hauteur / 2);
     ctx.scale(camera.zoom, camera.zoom);
     ctx.translate(-camera.x, -camera.y);
-    const scene = { ox: 0, oy: 0, t: etat.t, anim: animer(), zoom: camera.zoom };
+    const scene = { ox: 0, oy: 0, t: etat.t, anim: animer(), zoom: camera.zoom, quartier: etat.quartier?.id ?? null };
     monde.dessinerSol(ctx, scene, camera.zoneVisible(80));
     for (const q of monde.quartiers) monde.contourQuartier(ctx, q, etat.quartier === q);
 
@@ -159,6 +158,7 @@ async function demarrer() {
     if (etat.personnages) liste.push(...acteurs.objets(scene));
     liste.sort((a, b) => a.profondeur - b.profondeur);
     for (const o of liste) o.dessiner(ctx);
+    monde.dessinerNoms(ctx, scene);
 
     if (etat.survol) {
       const b = etat.survol;
@@ -182,24 +182,11 @@ async function demarrer() {
   function etiquettes(c) {
     c.textBaseline = 'middle';
     c.textAlign = 'center';
-    etat.enseignes = [];
-    if (camera.zoom >= 0.3) {
-      for (const q of monde.quartiers) {
-        const [wx, wy] = monde.enseigneQuartier(q);
-        const [ex, y] = camera.versEcran(wx, wy);
-        c.font = `800 11px ${POLICE}`;
-        const l = c.measureText(q.titre.toUpperCase()).width + 26;
-        // l'enseigne reste toujours dans l'écran : jamais coupée sur un bord
-        const x = Math.min(Math.max(ex, 8 + l / 2), camera.largeur - 8 - l / 2);
-        enseigne(c, q.titre, x, y, monde.accentQuartier(q.id), etat.quartier === q);
-        etat.enseignes.push({ q, x: x - l / 2, y: y - 10, l, h: 20 });
-      }
-    }
     if (etat.noms) {
       for (const b of monde.batiments) {
         const survole = etat.survol === b || etat.selection === b.projet.slug;
         if (camera.zoom < 0.34 && !survole) continue;
-        const [x, y] = camera.versEcran(b.ancre[0], b.ancre[1] - 6);
+        const [x, y] = camera.versEcran(b.pied[0], b.pied[1] - 14);
         etiquette(c, b.projet.nom, x, y, b.projet.accent, survole);
       }
     }
@@ -237,36 +224,6 @@ async function demarrer() {
     c.stroke();
     c.fillStyle = vif ? '#ffffff' : '#e6e9fb';
     c.fillText(texte, x, y + 0.5);
-  }
-
-  /**
-   * L'enseigne d'un quartier : une pastille à son couleur. Renvoie sa largeur.
-   * @param {CanvasRenderingContext2D} c
-   * @param {string} texte
-   * @param {number} x
-   * @param {number} y
-   * @param {string} couleur
-   * @param {boolean} vif
-   */
-  function enseigne(c, texte, x, y, couleur, vif) {
-    c.font = `800 11px ${POLICE}`;
-    const l = c.measureText(texte.toUpperCase()).width + 26;
-    c.fillStyle = vif ? 'rgba(14,19,48,0.98)' : 'rgba(14,19,48,0.88)';
-    c.strokeStyle = couleur;
-    c.lineWidth = vif ? 2.5 : 1.5;
-    c.beginPath();
-    c.roundRect(x - l / 2, y - 10, l, 20, 10);
-    c.fill();
-    c.stroke();
-    c.fillStyle = couleur;
-    c.beginPath();
-    c.arc(x - l / 2 + 11, y, 3.5, 0, Math.PI * 2);
-    c.fill();
-    c.fillStyle = vif ? '#ffffff' : '#dfe4ff';
-    c.textAlign = 'left';
-    c.fillText(texte.toUpperCase(), x - l / 2 + 19, y + 0.5);
-    c.textAlign = 'center';
-    return l;
   }
 
   /** @param {CanvasRenderingContext2D} c */
@@ -361,8 +318,7 @@ async function demarrer() {
     const [wx, wy] = camera.versMonde(px, py);
     etat.survolActeur = etat.personnages ? acteurs.trouver(wx, wy) : null;
     etat.survol = etat.survolActeur ? null : monde.trouver(wx, wy);
-    const sousEnseigne = etat.enseignes.find((e) => px >= e.x && px <= e.x + e.l && py >= e.y && py <= e.y + e.h);
-    etat.quartier = etat.survol || etat.survolActeur ? null : sousEnseigne ? sousEnseigne.q : monde.quartierSous(wx, wy);
+    etat.quartier = etat.survol || etat.survolActeur ? null : monde.quartierSous(wx, wy);
     canevas.classList.toggle('pointe', etat.survol !== null);
     invalider();
   }
