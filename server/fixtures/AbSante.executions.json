@@ -1,0 +1,139 @@
+{
+  "workflow_runs": [
+    {
+      "name": "Publish DB dump",
+      "event": "schedule",
+      "head_branch": "main",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-11-06T13:06:17Z",
+      "html_url": "https://github.com/abnd-corp/AbSante/actions/runs/42222795633"
+    },
+    {
+      "name": "Gouvernance",
+      "event": "pull_request",
+      "head_branch": "automated/rpps-data-update",
+      "status": "completed",
+      "conclusion": "action_required",
+      "created_at": "2026-11-06T12:54:22Z",
+      "html_url": "https://github.com/abnd-corp/AbSante/actions/runs/42221234797"
+    },
+    {
+      "name": "CI",
+      "event": "pull_request",
+      "head_branch": "automated/rpps-data-update",
+      "status": "completed",
+      "conclusion": "action_required",
+      "created_at": "2026-11-06T12:54:21Z",
+      "html_url": "https://github.com/abnd-corp/AbSante/actions/runs/42221234408"
+    },
+    {
+      "name": "CI",
+      "event": "workflow_dispatch",
+      "head_branch": "automated/rpps-data-update",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-11-06T12:54:19Z",
+      "html_url": "https://github.com/abnd-corp/AbSante/actions/runs/42221230524"
+    },
+    {
+      "name": "Update RPPS data",
+      "event": "schedule",
+      "head_branch": "main",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-11-06T12:44:36Z",
+      "html_url": "https://github.com/abnd-corp/AbSante/actions/runs/42219992055"
+    },
+    {
+      "name": "Publish DB dump",
+      "event": "schedule",
+      "head_branch": "main",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-11-05T13:23:23Z",
+      "html_url": "https://github.com/abnd-corp/AbSante/actions/runs/42035324063"
+    },
+    {
+      "name": "Gouvernance",
+      "event": "pull_request",
+      "head_branch": "automated/rpps-data-update",
+      "status": "completed",
+      "conclusion": "action_required",
+      "created_at": "2026-11-05T13:05:40Z",
+      "html_url": "https://github.com/abnd-corp/AbSante/actions/runs/42032705195"
+    },
+    {
+      "name": "CI",
+      "event": "pull_request",
+      "head_branch": "automated/rpps-data-update",
+      "status": "completed",
+      "conclusion": "action_required",
+      "created_at": "2026-11-05T13:05:40Z",
+      "html_url": "https://github.com/abnd-corp/AbSante/actions/runs/42032705089"
+    },
+    {
+      "name": "CI",
+      "event": "workflow_dispatch",
+      "head_branch": "automated/rpps-data-update",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-11-05T13:05:38Z",
+      "html_url": "https://github.com/abnd-corp/AbSante/actions/runs/42032699030"
+    },
+    {
+      "name": "Update RPPS data",
+      "event": "schedule",
+      "head_branch": "main",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-11-05T12:57:10Z",
+      "html_url": "https://github.com/abnd-corp/AbSante/actions/runs/42031474136"
+    },
+    {
+      "name": "Publish DB dump",
+      "event": "schedule",
+      "head_branch": "main",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-11-04T13:09:46Z",
+      "html_url": "https://github.com/abnd-corp/AbSante/actions/runs/41835581902"
+    },
+    {
+      "name": "Gouvernance",
+      "event": "pull_request",
+      "head_branch": "automated/rpps-data-update",
+      "status": "completed",
+      "conclusion": "action_required",
+      "created_at": "2026-11-04T13:00:18Z",
+      "html_url": "https://github.com/abnd-corp/AbSante/actions/runs/41834146792"
+    },
+    {
+      "name": "CI",
+      "event": "pull_request",
+      "head_branch": "automated/rpps-data-update",
+      "status": "completed",
+      "conclusion": "action_required",
+      "created_at": "2026-11-04T13:00:18Z",
+      "html_url": "https://github.com/abnd-corp/AbSante/actions/runs/41834145779"
+    },
+    {
+      "name": "CI",
+      "event": "workflow_dispatch",
+      "head_branch": "automated/rpps-data-update",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-11-04T13:00:17Z",
+      "html_url": "https://github.com/abnd-corp/AbSante/actions/runs/41834143200"
+    },
+    {
+      "name": "Update RPPS data",
+      "event": "schedule",
+      "head_branch": "main",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-11-04T12:48:23Z",
+      "html_url": "https://github.com/abnd-corp/AbSante/actions/runs/41832449390"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+[
+  {
+    "number": 1,
+    "title": "Créer Abvigie 0.1 : le tableau de bord public de l'orga",
+    "html_url": "https://github.com/abnd-corp/Abvigie/issues/1",
+    "user": {
+      "login": "hugolagouardat",
+      "type": "User"
+    },
+    "milestone": {
+      "title": "Abvigie 0.1",
+      "due_on": "2026-11-19T00:00:00Z"
+    },
+    "created_at": "2026-11-06T21:53:55Z",
+    "pull_request": null
+  }
+]

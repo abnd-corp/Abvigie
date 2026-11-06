@@ -1,0 +1,341 @@
+[
+  {
+    "number": 87,
+    "title": "Espace Statistiques : visites, ventes, finances, atelier, comparaisons et règles",
+    "html_url": "https://github.com/abnd-corp/Abatelier/issues/87",
+    "user": {
+      "login": "Rxdy",
+      "type": "User"
+    },
+    "milestone": null,
+    "created_at": "2026-10-28T09:25:22Z",
+    "pull_request": null
+  },
+  {
+    "number": 67,
+    "title": "Mentions légales : page séparée des textes marketing dans Site vitrine",
+    "html_url": "https://github.com/abnd-corp/Abatelier/issues/67",
+    "user": {
+      "login": "Rxdy",
+      "type": "User"
+    },
+    "milestone": null,
+    "created_at": "2026-10-26T13:50:43Z",
+    "pull_request": null
+  },
+  {
+    "number": 33,
+    "title": "Brancher le nettoyage hebdomadaire des images GHCR et le tester en essai",
+    "html_url": "https://github.com/abnd-corp/Abatelier/issues/33",
+    "user": {
+      "login": "Rxdy",
+      "type": "User"
+    },
+    "milestone": {
+      "title": "Semaine du 26 octobre",
+      "due_on": "2026-11-01T00:00:00Z"
+    },
+    "created_at": "2026-10-23T20:42:49Z",
+    "pull_request": null
+  },
+  {
+    "number": 25,
+    "title": "D9 · Contrat et licence",
+    "html_url": "https://github.com/abnd-corp/Abatelier/issues/25",
+    "user": {
+      "login": "Rxdy",
+      "type": "User"
+    },
+    "milestone": {
+      "title": "Multi-clients",
+      "due_on": null
+    },
+    "created_at": "2026-10-22T12:45:55Z",
+    "pull_request": null
+  },
+  {
+    "number": 24,
+    "title": "D8 · Politique de support des anciennes versions",
+    "html_url": "https://github.com/abnd-corp/Abatelier/issues/24",
+    "user": {
+      "login": "Rxdy",
+      "type": "User"
+    },
+    "milestone": {
+      "title": "Multi-clients",
+      "due_on": null
+    },
+    "created_at": "2026-10-22T12:45:52Z",
+    "pull_request": null
+  },
+  {
+    "number": 23,
+    "title": "D6 · Modules activables",
+    "html_url": "https://github.com/abnd-corp/Abatelier/issues/23",
+    "user": {
+      "login": "Rxdy",
+      "type": "User"
+    },
+    "milestone": {
+      "title": "Multi-clients",
+      "due_on": null
+    },
+    "created_at": "2026-10-22T12:45:50Z",
+    "pull_request": null
+  },
+  {
+    "number": 22,
+    "title": "D7 · Raspberry Pi + NAS chez le client",
+    "html_url": "https://github.com/abnd-corp/Abatelier/issues/22",
+    "user": {
+      "login": "Rxdy",
+      "type": "User"
+    },
+    "milestone": {
+      "title": "Distribution v1",
+      "due_on": null
+    },
+    "created_at": "2026-10-22T12:45:47Z",
+    "pull_request": null
+  },
+  {
+    "number": 21,
+    "title": "D5 · Migrations sûres entre versions",
+    "html_url": "https://github.com/abnd-corp/Abatelier/issues/21",
+    "user": {
+      "login": "Rxdy",
+      "type": "User"
+    },
+    "milestone": {
+      "title": "Distribution v1",
+      "due_on": null
+    },
+    "created_at": "2026-10-22T12:45:45Z",
+    "pull_request": null
+  },
+  {
+    "number": 20,
+    "title": "D4 · Script de déploiement avec retour arrière",
+    "html_url": "https://github.com/abnd-corp/Abatelier/issues/20",
+    "user": {
+      "login": "Rxdy",
+      "type": "User"
+    },
+    "milestone": {
+      "title": "Distribution v1",
+      "due_on": null
+    },
+    "created_at": "2026-10-22T12:45:42Z",
+    "pull_request": null
+  },
+  {
+    "number": 19,
+    "title": "D3 · Version par client",
+    "html_url": "https://github.com/abnd-corp/Abatelier/issues/19",
+    "user": {
+      "login": "Rxdy",
+      "type": "User"
+    },
+    "milestone": {
+      "title": "Distribution v1",
+      "due_on": null
+    },
+    "created_at": "2026-10-22T12:45:39Z",
+    "pull_request": null
+  },
+  {
+    "number": 18,
+    "title": "D2 · Versions et images Docker sur GHCR",
+    "html_url": "https://github.com/abnd-corp/Abatelier/issues/18",
+    "user": {
+      "login": "Rxdy",
+      "type": "User"
+    },
+    "milestone": {
+      "title": "Distribution v1",
+      "due_on": null
+    },
+    "created_at": "2026-10-22T12:45:36Z",
+    "pull_request": null
+  },
+  {
+    "number": 17,
+    "title": "D1 · Environnements : dev, staging, prod",
+    "html_url": "https://github.com/abnd-corp/Abatelier/issues/17",
+    "user": {
+      "login": "Rxdy",
+      "type": "User"
+    },
+    "milestone": {
+      "title": "Distribution v1",
+      "due_on": null
+    },
+    "created_at": "2026-10-22T12:45:33Z",
+    "pull_request": null
+  },
+  {
+    "number": 16,
+    "title": "R6 · Revue de sécurité de l'application",
+    "html_url": "https://github.com/abnd-corp/Abatelier/issues/16",
+    "user": {
+      "login": "Rxdy",
+      "type": "User"
+    },
+    "milestone": {
+      "title": "Rôles et sécurité",
+      "due_on": null
+    },
+    "created_at": "2026-10-22T12:45:29Z",
+    "pull_request": null
+  },
+  {
+    "number": 14,
+    "title": "R8 · Délai et « en retard » dans Fabrication",
+    "html_url": "https://github.com/abnd-corp/Abatelier/issues/14",
+    "user": {
+      "login": "Rxdy",
+      "type": "User"
+    },
+    "milestone": {
+      "title": "Premiers retours",
+      "due_on": null
+    },
+    "created_at": "2026-10-22T12:45:23Z",
+    "pull_request": null
+  },
+  {
+    "number": 12,
+    "title": "R4 · Direction : devis des visiteurs sans compte, anonymes",
+    "html_url": "https://github.com/abnd-corp/Abatelier/issues/12",
+    "user": {
+      "login": "Rxdy",
+      "type": "User"
+    },
+    "milestone": {
+      "title": "Premiers retours",
+      "due_on": null
+    },
+    "created_at": "2026-10-22T12:45:17Z",
+    "pull_request": null
+  },
+  {
+    "number": 9,
+    "title": "R1 · Numérotation des documents non modifiable",
+    "html_url": "https://github.com/abnd-corp/Abatelier/issues/9",
+    "user": {
+      "login": "Rxdy",
+      "type": "User"
+    },
+    "milestone": {
+      "title": "Premiers retours",
+      "due_on": null
+    },
+    "created_at": "2026-10-22T12:45:09Z",
+    "pull_request": null
+  },
+  {
+    "number": 8,
+    "title": "M8 · Démonstration, usage et retours",
+    "html_url": "https://github.com/abnd-corp/Abatelier/issues/8",
+    "user": {
+      "login": "Rxdy",
+      "type": "User"
+    },
+    "milestone": {
+      "title": "Mise en service chez le premier client",
+      "due_on": null
+    },
+    "created_at": "2026-10-22T12:45:06Z",
+    "pull_request": null
+  },
+  {
+    "number": 7,
+    "title": "M7 · Stock de feuilles, la suite",
+    "html_url": "https://github.com/abnd-corp/Abatelier/issues/7",
+    "user": {
+      "login": "Rxdy",
+      "type": "User"
+    },
+    "milestone": {
+      "title": "Mise en service chez le premier client",
+      "due_on": null
+    },
+    "created_at": "2026-10-22T12:45:03Z",
+    "pull_request": null
+  },
+  {
+    "number": 6,
+    "title": "M6 · Confirmation de l'adresse e-mail et mot de passe oublié du client",
+    "html_url": "https://github.com/abnd-corp/Abatelier/issues/6",
+    "user": {
+      "login": "Rxdy",
+      "type": "User"
+    },
+    "milestone": {
+      "title": "Mise en service chez le premier client",
+      "due_on": null
+    },
+    "created_at": "2026-10-22T12:45:00Z",
+    "pull_request": null
+  },
+  {
+    "number": 5,
+    "title": "M5 · Stripe en mode test",
+    "html_url": "https://github.com/abnd-corp/Abatelier/issues/5",
+    "user": {
+      "login": "Rxdy",
+      "type": "User"
+    },
+    "milestone": {
+      "title": "Mise en service chez le premier client",
+      "due_on": null
+    },
+    "created_at": "2026-10-22T12:44:58Z",
+    "pull_request": null
+  },
+  {
+    "number": 4,
+    "title": "M4 · Paramétrage chez le client avec le guide",
+    "html_url": "https://github.com/abnd-corp/Abatelier/issues/4",
+    "user": {
+      "login": "Rxdy",
+      "type": "User"
+    },
+    "milestone": {
+      "title": "Mise en service chez le premier client",
+      "due_on": null
+    },
+    "created_at": "2026-10-22T12:44:55Z",
+    "pull_request": null
+  },
+  {
+    "number": 3,
+    "title": "M3 · Déploiement : domaine, Raspberry Pi, HTTPS, e-mail réel, sauvegardes hors machine, supervision",
+    "html_url": "https://github.com/abnd-corp/Abatelier/issues/3",
+    "user": {
+      "login": "Rxdy",
+      "type": "User"
+    },
+    "milestone": {
+      "title": "Mise en service chez le premier client",
+      "due_on": null
+    },
+    "created_at": "2026-10-22T12:44:52Z",
+    "pull_request": null
+  },
+  {
+    "number": 2,
+    "title": "M2 · Guide de mise en service (`docs/mise-en-service.md`)",
+    "html_url": "https://github.com/abnd-corp/Abatelier/issues/2",
+    "user": {
+      "login": "Rxdy",
+      "type": "User"
+    },
+    "milestone": {
+      "title": "Mise en service chez le premier client",
+      "due_on": null
+    },
+    "created_at": "2026-10-22T12:44:50Z",
+    "pull_request": null
+  }
+]

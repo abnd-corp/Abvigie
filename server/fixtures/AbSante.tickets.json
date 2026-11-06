@@ -1,0 +1,185 @@
+[
+  {
+    "number": 48,
+    "title": "ci: bump the actions group across 1 directory with 6 updates",
+    "html_url": "https://github.com/abnd-corp/AbSante/pull/48",
+    "user": {
+      "login": "dependabot[bot]",
+      "type": "Bot"
+    },
+    "milestone": null,
+    "created_at": "2026-11-01T11:11:09Z",
+    "pull_request": {}
+  },
+  {
+    "number": 39,
+    "title": "chore(deps): bump pinia from 3.0.4 to 4.1.0 in /front",
+    "html_url": "https://github.com/abnd-corp/AbSante/pull/39",
+    "user": {
+      "login": "dependabot[bot]",
+      "type": "Bot"
+    },
+    "milestone": null,
+    "created_at": "2026-10-24T23:23:31Z",
+    "pull_request": {}
+  },
+  {
+    "number": 38,
+    "title": "chore(deps-dev): bump vite from 8.1.4 to 8.3.4 in /front",
+    "html_url": "https://github.com/abnd-corp/AbSante/pull/38",
+    "user": {
+      "login": "dependabot[bot]",
+      "type": "Bot"
+    },
+    "milestone": null,
+    "created_at": "2026-10-24T23:23:26Z",
+    "pull_request": {}
+  },
+  {
+    "number": 37,
+    "title": "chore(deps): bump @fastify/rate-limit from 11.2.0 to 11.2.1 in /api",
+    "html_url": "https://github.com/abnd-corp/AbSante/pull/37",
+    "user": {
+      "login": "dependabot[bot]",
+      "type": "Bot"
+    },
+    "milestone": null,
+    "created_at": "2026-10-24T23:23:25Z",
+    "pull_request": {}
+  },
+  {
+    "number": 36,
+    "title": "chore(deps-dev): bump @types/node from 24.13.5 to 26.6.5 in /api",
+    "html_url": "https://github.com/abnd-corp/AbSante/pull/36",
+    "user": {
+      "login": "dependabot[bot]",
+      "type": "Bot"
+    },
+    "milestone": null,
+    "created_at": "2026-10-24T23:23:21Z",
+    "pull_request": {}
+  },
+  {
+    "number": 35,
+    "title": "chore(deps-dev): bump eslint-plugin-vue from 10.11.0 to 10.11.1 in /front",
+    "html_url": "https://github.com/abnd-corp/AbSante/pull/35",
+    "user": {
+      "login": "dependabot[bot]",
+      "type": "Bot"
+    },
+    "milestone": null,
+    "created_at": "2026-10-24T23:23:20Z",
+    "pull_request": {}
+  },
+  {
+    "number": 34,
+    "title": "chore(deps): bump pg from 8.23.0 to 8.23.1 in /api",
+    "html_url": "https://github.com/abnd-corp/AbSante/pull/34",
+    "user": {
+      "login": "dependabot[bot]",
+      "type": "Bot"
+    },
+    "milestone": null,
+    "created_at": "2026-10-24T23:23:14Z",
+    "pull_request": {}
+  },
+  {
+    "number": 33,
+    "title": "chore(deps-dev): bump vitest from 4.1.10 to 5.0.5 in /front",
+    "html_url": "https://github.com/abnd-corp/AbSante/pull/33",
+    "user": {
+      "login": "dependabot[bot]",
+      "type": "Bot"
+    },
+    "milestone": null,
+    "created_at": "2026-10-24T23:23:14Z",
+    "pull_request": {}
+  },
+  {
+    "number": 32,
+    "title": "chore(deps-dev): bump vitest from 4.1.10 to 5.0.5 in /api",
+    "html_url": "https://github.com/abnd-corp/AbSante/pull/32",
+    "user": {
+      "login": "dependabot[bot]",
+      "type": "Bot"
+    },
+    "milestone": null,
+    "created_at": "2026-10-24T23:23:08Z",
+    "pull_request": {}
+  },
+  {
+    "number": 31,
+    "title": "chore(deps): bump node from 22-alpine to 25-alpine in /front",
+    "html_url": "https://github.com/abnd-corp/AbSante/pull/31",
+    "user": {
+      "login": "dependabot[bot]",
+      "type": "Bot"
+    },
+    "milestone": null,
+    "created_at": "2026-10-24T23:23:07Z",
+    "pull_request": {}
+  },
+  {
+    "number": 30,
+    "title": "chore(deps): bump nginx from 1.27-alpine to 1.29-alpine in /front",
+    "html_url": "https://github.com/abnd-corp/AbSante/pull/30",
+    "user": {
+      "login": "dependabot[bot]",
+      "type": "Bot"
+    },
+    "milestone": null,
+    "created_at": "2026-10-24T23:23:07Z",
+    "pull_request": {}
+  },
+  {
+    "number": 29,
+    "title": "chore(deps): bump node from 22-alpine to 25-alpine in /api",
+    "html_url": "https://github.com/abnd-corp/AbSante/pull/29",
+    "user": {
+      "login": "dependabot[bot]",
+      "type": "Bot"
+    },
+    "milestone": null,
+    "created_at": "2026-10-24T23:23:01Z",
+    "pull_request": {}
+  },
+  {
+    "number": 20,
+    "title": "Sortir les mises à jour de données de la CI GitHub vers un script côté serveur",
+    "html_url": "https://github.com/abnd-corp/AbSante/issues/20",
+    "user": {
+      "login": "Rxdy",
+      "type": "User"
+    },
+    "milestone": {
+      "title": "Semaine du 26 octobre",
+      "due_on": "2026-11-01T00:00:00Z"
+    },
+    "created_at": "2026-10-23T15:33:51Z",
+    "pull_request": null
+  },
+  {
+    "number": 17,
+    "title": "pi_update_db.sh : bridage CPU et abandon au lieu de mettre la base en pause",
+    "html_url": "https://github.com/abnd-corp/AbSante/pull/17",
+    "user": {
+      "login": "Rxdy",
+      "type": "User"
+    },
+    "milestone": null,
+    "created_at": "2026-10-10T16:51:35Z",
+    "pull_request": {}
+  },
+  {
+    "number": 16,
+    "title": "chore: mise à jour quotidienne des données RPPS",
+    "html_url": "https://github.com/abnd-corp/AbSante/pull/16",
+    "user": {
+      "login": "github-actions[bot]",
+      "type": "Bot"
+    },
+    "milestone": null,
+    "created_at": "2026-09-28T11:42:58Z",
+    "pull_request": {}
+  }
+]

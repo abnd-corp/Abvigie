@@ -1,0 +1,12 @@
+{
+  "//": "Vérifie les types des modules de server/assets/js/ grâce aux commentaires JSDoc, sans étape de compilation. Voir docs/stack.md.",
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": true,
+    "noEmit": true,
+    "strict": true,
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM"]
+  },
+  "include": ["server/assets/js/*.js"]
+}
