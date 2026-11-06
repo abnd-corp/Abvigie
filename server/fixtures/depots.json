@@ -1,0 +1,351 @@
+[
+  {
+    "name": "Abnd",
+    "html_url": "https://github.com/abnd-corp/Abnd",
+    "description": "Abnd.io : vitrine communautaire de modules web, avec profils, favoris, tags et modération",
+    "language": "TypeScript",
+    "license": null,
+    "topics": [
+      "docker",
+      "express",
+      "sequelize",
+      "typescript",
+      "vue"
+    ],
+    "created_at": "2024-12-22T17:33:26Z",
+    "pushed_at": "2026-10-26T05:45:19Z",
+    "archived": false,
+    "fork": false,
+    "has_issues": true,
+    "default_branch": "main"
+  },
+  {
+    "name": "Abloue",
+    "html_url": "https://github.com/abnd-corp/Abloue",
+    "description": "Abloue : carte interactive de France pour afficher et filtrer des données par département",
+    "language": "HTML",
+    "license": {
+      "spdx_id": "MIT"
+    },
+    "topics": [
+      "departements",
+      "france",
+      "interactive-map",
+      "javascript",
+      "svg"
+    ],
+    "created_at": "2025-07-06T10:30:39Z",
+    "pushed_at": "2026-10-25T10:25:49Z",
+    "archived": false,
+    "fork": false,
+    "has_issues": true,
+    "default_branch": "main"
+  },
+  {
+    "name": "Abwatch",
+    "html_url": "https://github.com/abnd-corp/Abwatch",
+    "description": "Abwatch: helper script to set up Docker image security tools (Trivy, Dockle) · Script d'aide à l'audit de sécurité des images Docker (Trivy, Dockle)",
+    "language": "Shell",
+    "license": null,
+    "topics": [
+      "container-security",
+      "docker",
+      "dockle",
+      "security-audit",
+      "shell",
+      "trivy"
+    ],
+    "created_at": "2025-07-29T17:36:10Z",
+    "pushed_at": "2026-10-25T10:25:44Z",
+    "archived": false,
+    "fork": false,
+    "has_issues": true,
+    "default_branch": "main"
+  },
+  {
+    "name": "Abcarte",
+    "html_url": "https://github.com/abnd-corp/Abcarte",
+    "description": "Abcarte : carte SVG des départements et régions de France avec leurs numéros",
+    "language": "HTML",
+    "license": null,
+    "topics": [
+      "departements",
+      "france",
+      "map",
+      "regions",
+      "svg"
+    ],
+    "created_at": "2025-07-29T17:38:18Z",
+    "pushed_at": "2026-10-25T10:23:17Z",
+    "archived": false,
+    "fork": true,
+    "has_issues": false,
+    "default_branch": "main"
+  },
+  {
+    "name": "Abyss",
+    "html_url": "https://github.com/abnd-corp/Abyss",
+    "description": "Abyss : gestionnaire de dépenses personnelles, avec tableau de bord, catégories, opérations récurrentes et données chiffrées (PWA)",
+    "language": "Vue",
+    "license": null,
+    "topics": [
+      "docker",
+      "expense-tracker",
+      "personal-finance",
+      "pwa",
+      "vue"
+    ],
+    "created_at": "2026-03-31T19:15:29Z",
+    "pushed_at": "2026-10-25T01:57:56Z",
+    "archived": false,
+    "fork": false,
+    "has_issues": true,
+    "default_branch": "main"
+  },
+  {
+    "name": "Abcom",
+    "html_url": "https://github.com/abnd-corp/Abcom",
+    "description": "Abcom: serverless, end-to-end encrypted peer-to-peer LAN messenger in Rust · Messagerie LAN chiffrée de bout en bout, en pair-à-pair, sans serveur",
+    "language": "Rust",
+    "license": {
+      "spdx_id": "AGPL-3.0"
+    },
+    "topics": [
+      "egui",
+      "end-to-end-encryption",
+      "lan",
+      "local-first",
+      "messenger",
+      "noise-protocol",
+      "p2p",
+      "rust"
+    ],
+    "created_at": "2026-04-27T14:56:02Z",
+    "pushed_at": "2026-10-25T10:28:42Z",
+    "archived": false,
+    "fork": false,
+    "has_issues": true,
+    "default_branch": "main"
+  },
+  {
+    "name": "AbX2T",
+    "html_url": "https://github.com/abnd-corp/AbX2T",
+    "description": "AbX2T: standalone single-binary CLI document converter built on the ONLYOFFICE engine (docx, xlsx, pptx, pdf…) · Convertisseur de documents en ligne de commande, en un seul exécutable",
+    "language": "C",
+    "license": {
+      "spdx_id": "AGPL-3.0"
+    },
+    "topics": [
+      "cli",
+      "cross-platform",
+      "document-converter",
+      "docx",
+      "dotnet",
+      "onlyoffice",
+      "pdf",
+      "x2t"
+    ],
+    "created_at": "2026-05-12T09:42:40Z",
+    "pushed_at": "2026-10-25T01:00:24Z",
+    "archived": false,
+    "fork": false,
+    "has_issues": true,
+    "default_branch": "main"
+  },
+  {
+    "name": "Abvance",
+    "html_url": "https://github.com/abnd-corp/Abvance",
+    "description": "Abvance : gestion de tickets en ligne, pour une équipe de développement et ses clients",
+    "language": null,
+    "license": null,
+    "topics": [
+      "client-portal",
+      "issue-tracker",
+      "project-management",
+      "ticketing"
+    ],
+    "created_at": "2026-08-14T16:13:54Z",
+    "pushed_at": "2026-10-25T10:25:52Z",
+    "archived": false,
+    "fork": false,
+    "has_issues": true,
+    "default_branch": "main"
+  },
+  {
+    "name": "AbSante",
+    "html_url": "https://github.com/abnd-corp/AbSante",
+    "description": "AbSante : comparateur de densité de professionnels de santé par territoire (RPPS)",
+    "language": "TypeScript",
+    "license": null,
+    "topics": [
+      "data-visualization",
+      "france",
+      "healthcare",
+      "open-data",
+      "rpps",
+      "sante",
+      "typescript"
+    ],
+    "created_at": "2026-09-18T09:15:35Z",
+    "pushed_at": "2026-11-06T12:54:15Z",
+    "archived": false,
+    "fork": false,
+    "has_issues": true,
+    "default_branch": "main"
+  },
+  {
+    "name": "abflow-skill-doc-test",
+    "html_url": "https://github.com/abnd-corp/abflow-skill-doc-test",
+    "description": "AbFlow: self-hosted file and photo manager for Raspberry Pi · Gestionnaire de fichiers et de photos auto-hébergé pour Raspberry Pi",
+    "language": "TypeScript",
+    "license": null,
+    "topics": [
+      "file-manager",
+      "nodejs",
+      "photo-gallery",
+      "pwa",
+      "raspberry-pi",
+      "self-hosted",
+      "vue"
+    ],
+    "created_at": "2026-10-14T12:45:08Z",
+    "pushed_at": "2026-10-25T01:42:53Z",
+    "archived": false,
+    "fork": true,
+    "has_issues": false,
+    "default_branch": "main"
+  },
+  {
+    "name": "Abatelier",
+    "html_url": "https://github.com/abnd-corp/Abatelier",
+    "description": "Abatelier : gestion d'atelier de fabrication sur mesure (devis, commandes, fabrication, stock, factures, espace client)",
+    "language": "TypeScript",
+    "license": {
+      "spdx_id": "AGPL-3.0"
+    },
+    "topics": [
+      "devis",
+      "erp",
+      "facturation",
+      "facture-electronique",
+      "typescript",
+      "workshop-management"
+    ],
+    "created_at": "2026-10-22T12:43:37Z",
+    "pushed_at": "2026-10-30T15:46:10Z",
+    "archived": false,
+    "fork": false,
+    "has_issues": true,
+    "default_branch": "dev"
+  },
+  {
+    "name": "gouvernance",
+    "html_url": "https://github.com/abnd-corp/gouvernance",
+    "description": "Gouvernance d'Abnd : charte, règles communes, workflows partagés",
+    "language": "Shell",
+    "license": null,
+    "topics": [
+      "charte",
+      "github-actions",
+      "gouvernance",
+      "reusable-workflows"
+    ],
+    "created_at": "2026-10-22T14:20:49Z",
+    "pushed_at": "2026-11-01T17:47:23Z",
+    "archived": false,
+    "fork": false,
+    "has_issues": true,
+    "default_branch": "main"
+  },
+  {
+    "name": "template",
+    "html_url": "https://github.com/abnd-corp/template",
+    "description": "Modèle de projet Abnd : Makefile, contrôles de gouvernance, Dependabot",
+    "language": "Makefile",
+    "license": null,
+    "topics": [
+      "gouvernance",
+      "makefile",
+      "project-template",
+      "template"
+    ],
+    "created_at": "2026-10-24T01:08:38Z",
+    "pushed_at": "2026-10-25T02:02:56Z",
+    "archived": false,
+    "fork": false,
+    "has_issues": true,
+    "default_branch": "main"
+  },
+  {
+    "name": "org-config",
+    "html_url": "https://github.com/abnd-corp/org-config",
+    "description": "Règles de l'organisation Abnd en fichiers : rulesets et script d'application",
+    "language": "Shell",
+    "license": {
+      "spdx_id": "MIT"
+    },
+    "topics": [
+      "configuration-as-code",
+      "github",
+      "gouvernance",
+      "rulesets"
+    ],
+    "created_at": "2026-10-24T01:09:44Z",
+    "pushed_at": "2026-10-25T02:01:49Z",
+    "archived": false,
+    "fork": false,
+    "has_issues": true,
+    "default_branch": "main"
+  },
+  {
+    "name": "Abdns",
+    "html_url": "https://github.com/abnd-corp/Abdns",
+    "description": "Encrypted DNS for your computer: your own DNS-over-HTTPS resolver first, ordered encrypted fallbacks, network DNS only for captive portals. macOS, Rust.",
+    "language": "Rust",
+    "license": {
+      "spdx_id": "AGPL-3.0"
+    },
+    "topics": [
+      "captive-portal",
+      "censorship",
+      "dns",
+      "dns-over-https",
+      "dns-resolver",
+      "doh",
+      "encrypted-dns",
+      "macos",
+      "network",
+      "privacy",
+      "rust",
+      "self-hosted",
+      "unbound"
+    ],
+    "created_at": "2026-11-02T15:59:57Z",
+    "pushed_at": "2026-11-05T15:54:19Z",
+    "archived": false,
+    "fork": false,
+    "has_issues": true,
+    "default_branch": "main"
+  },
+  {
+    "name": "Abvigie",
+    "html_url": "https://github.com/abnd-corp/Abvigie",
+    "description": "Abvigie : tableau de bord public de l'organisation Abnd, une ville dont chaque bâtiment est un projet",
+    "language": "Makefile",
+    "license": null,
+    "topics": [
+      "dashboard",
+      "github",
+      "monitoring",
+      "rust",
+      "svg",
+      "zero-dependency-frontend"
+    ],
+    "created_at": "2026-11-06T21:53:01Z",
+    "pushed_at": "2026-11-06T21:53:52Z",
+    "archived": false,
+    "fork": false,
+    "has_issues": true,
+    "default_branch": "main"
+  }
+]
