@@ -8,9 +8,10 @@ use crate::{
     config::Config,
     dates,
     model::{
-        Activite, Ci, Drapeau, Etat, EtatCi, Execution, Projet, Quartier, Resume, Ticket,
+        Acteur, Activite, Ci, Drapeau, Etat, EtatCi, Execution, Projet, Resume, Ticket,
         VERSION_SCHEMA,
     },
+    progression,
     rules::{self, Contexte},
     sources::{
         Erreur, Source,
@@ -44,14 +45,55 @@ pub fn construire(source: &dyn Source, config: &Config, maintenant: i64) -> Resu
             .then_with(|| a.nom.to_lowercase().cmp(&b.nom.to_lowercase()))
     });
     let resume = resumer(&projets);
+    let progression = progression::calculer(&projets);
+    let acteurs = acteurs(&projets);
     Ok(Etat {
         schema: VERSION_SCHEMA,
         genere_le: dates::iso(maintenant),
         organisation: config.organisation.clone(),
         resume,
         avertissements,
+        progression,
+        acteurs,
         projets,
     })
+}
+
+/// Les personnes et les robots visibles dans les issues et pull requests ouvertes, les plus actifs d'abord.
+/// Ce sont des identifiants GitHub publics ; aucune autre donnée sur eux n'est lue.
+fn acteurs(projets: &[Projet]) -> Vec<Acteur> {
+    let mut compte: std::collections::BTreeMap<(&str, bool), usize> =
+        std::collections::BTreeMap::new();
+    for t in projets
+        .iter()
+        .flat_map(|p| p.issues.iter().chain(p.prs.iter()))
+    {
+        *compte.entry((t.auteur.as_str(), t.robot)).or_default() += 1;
+    }
+    let mut tous: Vec<Acteur> = compte
+        .into_iter()
+        .map(|((login, robot), activite)| Acteur {
+            login: login.to_string(),
+            robot,
+            activite,
+        })
+        .collect();
+    tous.sort_by(|a, b| {
+        b.activite
+            .cmp(&a.activite)
+            .then_with(|| a.login.cmp(&b.login))
+    });
+    let (mut humains, mut robots) = (0, 0);
+    tous.retain(|a| {
+        let (n, max) = if a.robot {
+            (&mut robots, 4)
+        } else {
+            (&mut humains, 8)
+        };
+        *n += 1;
+        *n <= max
+    });
+    tous
 }
 
 /// Un nom de dépôt sert dans des URL et des noms de fichiers : on n'accepte que les caractères que GitHub autorise.
@@ -273,11 +315,6 @@ fn resumer(projets: &[Projet]) -> Resume {
         alertes: projets.iter().map(|p| p.drapeaux.len()).sum(),
         chantiers: projets.iter().filter(|p| p.chantier).count(),
     }
-}
-
-/// Pour les pages : les projets d'un quartier, dans l'ordre.
-pub fn du_quartier(etat: &Etat, quartier: Quartier) -> impl Iterator<Item = &Projet> {
-    etat.projets.iter().filter(move |p| p.quartier == quartier)
 }
 
 #[cfg(test)]

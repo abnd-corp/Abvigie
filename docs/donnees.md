@@ -11,6 +11,11 @@ Tout ce que la page affiche vient d'un seul objet, `Etat` (`server/src/model.rs`
   "organisation": "abnd-corp",
   "resume": { "projets": 16, "actifs": 16, "endormis": 0, "alertes": 24, "chantiers": 6 },
   "avertissements": [],                 // ce qui n'a pas pu être lu ; vide quand tout va bien
+  "progression": {                      // le niveau de la ville : voir quetes.md
+    "niveau": 5, "titre": "Cité", "xp": 655, "xp_max": 1040, "xp_debut": 624, "xp_suivant": 780,
+    "quetes": [ { "id": "licences", "titre": "…", "regle": "R20", "points": 10, "fait": 6, "total": 16, "a_traiter": ["abcarte", "…"] } ]
+  },
+  "acteurs": [ { "login": "hugolagouardat", "robot": false, "activite": 12 } ],   // les personnages de la carte
   "projets": [
     {
       "slug": "abcom",                  // identifiant dans les URL : /projets/abcom
@@ -38,6 +43,12 @@ Tout ce que la page affiche vient d'un seul objet, `Etat` (`server/src/model.rs`
 
 La forme exacte est dans `model.rs` : c'est la référence, ce document en est le commentaire.
 
+## Les données de la carte : `/api/carte.json`
+
+La carte ne lit pas `/api/etat.json` (60 Ko) mais un **résumé compact** (environ 4 Ko), aussi **incorporé dans la page d'accueil** (`<script type="application/json" id="donnees-carte">`) pour que la carte se dessine sans aller-retour réseau. Il est fabriqué par `render/carte.rs` et versionné à part (`version`, actuellement 1).
+
+Il contient, par projet : `slug`, `nom`, `quartier`, `accent` (la couleur), `lumieres` (0 à 4), `jours_inactif`, `chantier`, `archive`, `gravite` (la plus grave), `alertes`, `issues`, `prs` ; puis les `quartiers` (id, titre, nombre), les `acteurs` et, par quête, `accomplie` et `a_traiter`. Rien de plus : aucune description, aucun titre d'issue.
+
 ## Version du format
 
 `schema` vaut `VERSION_SCHEMA` (`model.rs`). **Ajouter** un champ ne change pas la version. **Retirer, renommer ou changer le sens** d'un champ l'incrémente : quelqu'un lit peut-être ce fichier. Si on la change, on le dit dans le message de la PR.
@@ -52,6 +63,8 @@ La forme exacte est dans `model.rs` : c'est la référence, ce document en est l
 | `robot` | auteur de type `Bot` ou nom finissant par `[bot]` (Dependabot, GitHub Actions) | `collect.rs` |
 | `ci` | la plus récente exécution terminée ou en cours sur `dev`, `staging`, `main` ou la branche par défaut, hors « Dependabot Updates » et exécutions annulées | `collect.rs` |
 | `drapeaux` | les règles de `rules/` ([catalogue](regles.md)) | `rules/` |
+| `progression` | les quêtes sur tous les projets non archivés ([quetes.md](quetes.md)) | `progression.rs` |
+| `acteurs` | les auteurs d'issues et de PR ouvertes, 8 personnes et 4 robots au plus, les plus actifs d'abord | `collect.rs` |
 | `chantier` | vrai s'il y a une issue en retard ou une pull request humaine qui attend | `collect.rs` |
 
 ## Limites connues

@@ -1,7 +1,7 @@
 //! La fiche d'un projet : une page complète (`/projets/<slug>`) et le même contenu en fragment pour le panneau latéral
 //! (`/projets/<slug>?partial=1`).
 
-use super::{Meta, Rendu, accueil, document, esc, seo, ville};
+use super::{Meta, Rendu, accueil, classe_gravite, document, esc, identifiant, seo};
 use crate::{
     dates,
     model::{EtatCi, Execution, Projet, Ticket},
@@ -34,8 +34,9 @@ pub fn page(r: &Rendu, p: &Projet) -> String {
         chemin: &chemin,
         json_ld: &json_ld,
         indexable: true,
+        entree: "vignettes",
+        classe: "fiche-page",
     };
-    let sprite = ville::sprite(std::iter::once(p));
 
     let mut h = String::with_capacity(8_192);
     let _ = write!(
@@ -47,14 +48,14 @@ pub fn page(r: &Rendu, p: &Projet) -> String {
     h.push_str(&fiche(p, 1));
     h.push_str("</main>");
     h.push_str(&accueil::pied(r));
-    document(r, &meta, &sprite, &h)
+    document(r, &meta, &h)
 }
 
 /// Le contenu de la fiche. `niveau` est le niveau du titre principal : 1 sur la page, 2 dans le panneau.
 pub fn fiche(p: &Projet, niveau: u8) -> String {
     let n = niveau;
     let s = niveau + 1;
-    let id = ville::identifiant(p);
+    let id = identifiant(p);
     let mut h = String::with_capacity(6_144);
     let _ = write!(
         h,
@@ -63,7 +64,9 @@ pub fn fiche(p: &Projet, niveau: u8) -> String {
     );
     let _ = write!(
         h,
-        "<svg class=\"grand\" viewBox=\"0 0 100 170\" aria-hidden=\"true\"><use href=\"#b-{id}\" width=\"100\" height=\"170\"/></svg><div>"
+        "<canvas class=\"vignette grande\" width=\"128\" height=\"150\" data-vignette=\"{}\" data-lumieres=\"{}\" aria-hidden=\"true\"></canvas><div>",
+        esc(&p.slug),
+        p.activite.lumieres()
     );
     let _ = write!(h, "<h{n}>{}</h{n}>", esc(&p.nom));
     if let Some(d) = &p.description {
@@ -90,7 +93,7 @@ pub fn fiche(p: &Projet, niveau: u8) -> String {
             let _ = write!(
                 h,
                 "<li class=\"{}\">{}{regle}</li>",
-                ville::classe_gravite(d.gravite),
+                classe_gravite(d.gravite),
                 esc(&d.message)
             );
         }

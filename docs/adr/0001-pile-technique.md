@@ -12,13 +12,13 @@ L'équipe a écarté Vue pour ce projet : peu de composants, presque aucune réu
 
 - **Backend : Rust**, un seul binaire, **trois dépendances directes** (`serde`, `serde_json`, `ureq`) et aucun runtime `async`.
 - **Pages : HTML fabriqué côté serveur** ([ADR 0002](0002-rendu-cote-serveur.md)), CSS écrit à la main, **aucun framework**.
-- **Interactivité : JavaScript natif** (`app.js`, environ 2,5 Ko), typé par des commentaires JSDoc et **vérifié par `tsc`** : on garde la sécurité des types de TypeScript sans étape de compilation, sans bundler et sans dépendance npm.
+- **La carte et l'interactivité : JavaScript natif en modules** (`assets/js/`), typé par des commentaires JSDoc et **vérifié par `tsc`** : on garde la sécurité des types de TypeScript sans étape de compilation, sans bundler et sans dépendance npm.
 - **Aucune ressource externe** : ni police, ni CDN, ni script tiers.
 - **Une structure qui évolue sans effort** : un fichier par règle, un fichier par bâtiment, un trait pour les sources ([architecture](../architecture.md)), et un guide « comment ajouter un X » pour chacun.
 
 ## Pourquoi pas TypeScript compilé
 
-Le script fait environ 60 lignes. Un compilateur, un bundler et un `package.json` apporteraient plus de fichiers, de dépendances à auditer et de mises à jour que de code à protéger. Le typage JSDoc donne la même vérification, et `tsc` peut rester un outil de développement optionnel.
+Le premier jet du script faisait environ 60 lignes : un compilateur et un bundler auraient apporté plus de fichiers que de code à protéger. La carte isométrique (neuf modules, environ 2 600 lignes, commentaires compris) change l'échelle, mais pas l'argument : les modules natifs du navigateur donnent déjà le découpage, `tsc` vérifie les types à partir de JSDoc, et il n'y a toujours ni compilateur, ni bundler, ni `package.json`. Les modules sont versionnés par le serveur ([carte.md](../carte.md)). Si le code doublait encore, la question d'un vrai TypeScript se reposerait.
 
 ## Conséquences
 

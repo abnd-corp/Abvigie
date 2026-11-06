@@ -1,11 +1,13 @@
 # Mettre en ligne
 
+Le service sert les pages, la carte (des modules JavaScript, versionnés) et les données : rien d'autre à héberger.
+
 > **État : rien n'est déployé, et rien n'est automatisé.** Il n'y a pas encore de CI, d'image Docker ni d'hébergement. Ce document décrit ce qu'il faudra faire pour la V0.1 ; il n'a pas été essayé en production. L'hébergement reste à décider (domaine « Infra et hébergement » de la charte), dans un ADR (R25).
 
 ## Lancer le binaire
 
 ```bash
-make build                      # target/release/abvigie, environ 1,5 Mo
+make build                      # target/release/abvigie, environ 1,6 Mo
 ABVIGIE_ADRESSE=127.0.0.1:8080 \
 ABVIGIE_URL=https://abvigie.exemple.org \
 GITHUB_TOKEN=…                  \
@@ -88,7 +90,7 @@ MemoryMax=64M
 WantedBy=multi-user.target
 ```
 
-`MemoryMax=64M` est très large : le processus utilise environ 3 Mo.
+`MemoryMax=64M` est très large : le processus utilise environ 4 Mo.
 
 Santé : `GET /sante` répond `200` et `{"ok":true,…}` quand des données sont chargées, `503` sinon.
 

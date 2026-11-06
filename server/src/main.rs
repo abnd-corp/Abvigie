@@ -9,6 +9,7 @@ mod config;
 mod dates;
 mod http;
 mod model;
+mod progression;
 mod render;
 mod rules;
 mod site;

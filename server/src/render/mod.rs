@@ -6,11 +6,15 @@
 //! **Règle de sécurité** : toute chaîne qui vient de GitHub passe par [`esc`] avant d'entrer dans une page.
 
 pub mod accueil;
+pub mod carte;
 pub mod projet;
 pub mod seo;
-pub mod ville;
 
-use crate::{config::Config, model::Etat};
+use crate::{
+    catalogue,
+    config::Config,
+    model::{Etat, Gravite, Projet},
+};
 use std::fmt::Write;
 
 /// Ce dont toutes les pages ont besoin.
@@ -30,6 +34,10 @@ pub struct Meta<'a> {
     pub chemin: &'a str,
     pub json_ld: &'a str,
     pub indexable: bool,
+    /// Module JavaScript chargé par la page (`carte`, `vignettes`).
+    pub entree: &'a str,
+    /// Classe du `<body>` (`jeu` pour l'écran de jeu, `fiche-page` pour une page de projet).
+    pub classe: &'a str,
 }
 
 /// Échappe un texte pour l'insérer dans du HTML, y compris dans un attribut entre guillemets.
@@ -64,13 +72,35 @@ pub fn tronquer(texte: &str, max: usize) -> String {
 /// Le logo : une tour de vigie dont le faisceau balaie la ville. Même dessin que `favicon.svg`.
 pub const LOGO: &str = include_str!("../../assets/logo.svg");
 
+/// Identifiant stable d'un projet pour les classes CSS (`v-<slug>` donne sa couleur propre).
+pub fn identifiant(projet: &Projet) -> &'static str {
+    catalogue::chercher(&projet.depot)
+        .map(|e| e.slug)
+        .unwrap_or("generique")
+}
+
+pub fn classe_gravite(g: Gravite) -> &'static str {
+    match g {
+        Gravite::Alerte => "g-alerte",
+        Gravite::Attention => "g-attention",
+        Gravite::Info => "g-info",
+    }
+}
+
 /// Enveloppe une page : en-tête, métadonnées SEO/GEO, corps, pied de page.
-pub fn document(r: &Rendu, meta: &Meta, sprite: &str, corps: &str) -> String {
+pub fn document(r: &Rendu, meta: &Meta, corps: &str) -> String {
     let base = &r.config.url_publique;
     let canonique = format!("{base}{}", meta.chemin);
-    let mut h = String::with_capacity(corps.len() + sprite.len() + 4_096);
-    h.push_str("<!doctype html>\n<html lang=\"fr\">\n<head>\n<meta charset=\"utf-8\">\n");
-    h.push_str("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, viewport-fit=cover\">\n");
+    let mut h = String::with_capacity(corps.len() + 4_096);
+    h.push_str(
+        "<!doctype html>
+<html lang=\"fr\">
+<head>
+<meta charset=\"utf-8\">
+",
+    );
+    h.push_str("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, viewport-fit=cover\">
+");
     let _ = writeln!(h, "<title>{}</title>", esc(meta.titre));
     let _ = writeln!(
         h,
@@ -79,16 +109,23 @@ pub fn document(r: &Rendu, meta: &Meta, sprite: &str, corps: &str) -> String {
     );
     if meta.indexable {
         let _ = writeln!(h, "<link rel=\"canonical\" href=\"{}\">", esc(&canonique));
-        h.push_str("<meta name=\"robots\" content=\"index, follow, max-image-preview:large\">\n");
+        h.push_str(
+            "<meta name=\"robots\" content=\"index, follow, max-image-preview:large\">
+",
+        );
     } else {
-        h.push_str("<meta name=\"robots\" content=\"noindex\">\n");
+        h.push_str(
+            "<meta name=\"robots\" content=\"noindex\">
+",
+        );
     }
-    h.push_str("<meta name=\"color-scheme\" content=\"dark light\">\n");
     h.push_str(
-        "<meta name=\"theme-color\" content=\"#121830\" media=\"(prefers-color-scheme: dark)\">\n",
+        "<meta name=\"color-scheme\" content=\"dark\">
+",
     );
     h.push_str(
-        "<meta name=\"theme-color\" content=\"#eef1fb\" media=\"(prefers-color-scheme: light)\">\n",
+        "<meta name=\"theme-color\" content=\"#121830\">
+",
     );
     let _ = writeln!(h, "<meta property=\"og:type\" content=\"website\">");
     let _ = writeln!(h, "<meta property=\"og:site_name\" content=\"Abvigie\">");
@@ -113,17 +150,33 @@ pub fn document(r: &Rendu, meta: &Meta, sprite: &str, corps: &str) -> String {
         "<meta property=\"og:image\" content=\"{}\">",
         esc(&format!("{base}/assets/og.png"))
     );
-    h.push_str("<meta property=\"og:image:width\" content=\"1200\">\n<meta property=\"og:image:height\" content=\"630\">\n");
-    h.push_str("<meta name=\"twitter:card\" content=\"summary_large_image\">\n");
-    h.push_str("<link rel=\"icon\" href=\"/favicon.svg\" type=\"image/svg+xml\">\n");
+    h.push_str(
+        "<meta property=\"og:image:width\" content=\"1200\">
+<meta property=\"og:image:height\" content=\"630\">
+",
+    );
+    h.push_str(
+        "<meta name=\"twitter:card\" content=\"summary_large_image\">
+",
+    );
+    h.push_str(
+        "<link rel=\"icon\" href=\"/favicon.svg\" type=\"image/svg+xml\">
+",
+    );
     let _ = writeln!(
         h,
         "<link rel=\"stylesheet\" href=\"/assets/style.css?v={}\">",
         r.version_css
     );
+    // sans JavaScript, tout s'affiche à la suite : la carte laisse la place au contenu
+    h.push_str(
+        "<noscript><link rel=\"stylesheet\" href=\"/assets/sansjs.css\"></noscript>
+",
+    );
     let _ = writeln!(
         h,
-        "<script src=\"/assets/app.js?v={}\" defer></script>",
+        "<script type=\"module\" src=\"/assets/js/{}.js?v={}\"></script>",
+        esc(meta.entree),
         r.version_js
     );
     if !meta.json_ld.is_empty() {
@@ -133,11 +186,21 @@ pub fn document(r: &Rendu, meta: &Meta, sprite: &str, corps: &str) -> String {
             meta.json_ld
         );
     }
-    h.push_str("</head>\n<body>\n<a class=\"saut\" href=\"#contenu\">Aller au contenu</a>\n");
-    h.push_str(sprite);
+    let _ = write!(
+        h,
+        "</head>
+<body class=\"{}\">
+<a class=\"saut\" href=\"#contenu\">Aller au contenu</a>
+",
+        esc(meta.classe)
+    );
     h.push_str(corps);
-    h.push_str("\n<dialog id=\"panneau\" aria-label=\"Fiche d'un projet\"><button class=\"fermer\" type=\"button\" aria-label=\"Fermer la fiche\">×</button><div class=\"panneau-contenu\"></div></dialog>\n");
-    h.push_str("</body>\n</html>\n");
+    h.push_str(
+        "
+</body>
+</html>
+",
+    );
     h
 }
 

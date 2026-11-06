@@ -541,26 +541,33 @@ mod tests {
         assert!(envoyer(adresse, gros.as_bytes()).starts_with("HTTP/1.1 431"));
     }
 
-    /// Le budget de poids de `docs/performance.md`. Il croît avec le nombre de projets : environ 2,5 ko par projet.
+    /// Le budget de poids de `docs/performance.md`. La page grandit avec le nombre de projets (environ 1,5 Ko chacun).
     #[test]
     fn la_page_reste_dans_son_budget_de_poids() {
         let site = site_de_test();
         let taille = |chemin: &str| site.chercher(chemin, false).corps.len();
         let projets = site.projets;
         assert!(
-            taille("/") <= 20_000 + 2_500 * projets,
+            taille("/") <= 14_000 + 1_500 * projets,
             "accueil : {} octets pour {projets} projets",
             taille("/")
         );
         assert!(
-            taille("/assets/style.css") <= 16_000,
+            taille("/assets/style.css") <= 20_000,
             "style.css : {} octets",
             taille("/assets/style.css")
         );
+        let js: usize = site
+            .chemins()
+            .into_iter()
+            .filter(|c| c.starts_with("/assets/js/"))
+            .map(taille)
+            .sum();
+        assert!(js <= 110_000, "JavaScript : {js} octets");
         assert!(
-            taille("/assets/app.js") <= 4_000,
-            "app.js : {} octets",
-            taille("/assets/app.js")
+            taille("/api/carte.json") <= 800 * projets + 1_000,
+            "carte.json : {} octets",
+            taille("/api/carte.json")
         );
         assert!(taille("/favicon.svg") <= 1_000);
         assert!(
@@ -568,6 +575,52 @@ mod tests {
             "og.png : {} octets",
             taille("/assets/og.png")
         );
+    }
+
+    /// Chaque module JavaScript importé existe bel et bien dans ce que le serveur sert : un import cassé ne se verrait
+    /// qu'au chargement de la page, dans le navigateur.
+    #[test]
+    fn tous_les_imports_javascript_sont_servis() {
+        let site = site_de_test();
+        let chemins = site.chemins();
+        let mut vus = 0;
+        for c in chemins.iter().filter(|c| c.starts_with("/assets/js/")) {
+            let source = String::from_utf8_lossy(&site.chercher(c, false).corps).into_owned();
+            for ligne in source
+                .lines()
+                .filter(|l| l.trim_start().starts_with("import ") || l.contains(" from './"))
+            {
+                if let Some(debut) = ligne.find("from './") {
+                    let nom = &ligne[debut + 8..];
+                    let nom = &nom[..nom.find('\'').unwrap_or(nom.len())];
+                    let nom = nom.split('?').next().unwrap_or(nom);
+                    assert!(ligne.contains("?v="), "{c} : import sans version : {ligne}");
+                    assert!(
+                        chemins.contains(&format!("/assets/js/{nom}").as_str()),
+                        "{c} importe {nom}, qui n'est pas servi"
+                    );
+                    vus += 1;
+                }
+            }
+        }
+        assert!(
+            vus >= 10,
+            "trop peu d'imports trouvés ({vus}) : le test ne vérifie plus rien"
+        );
+    }
+
+    #[test]
+    fn la_carte_publie_la_progression_et_les_quetes() {
+        let site = site_de_test();
+        let carte: serde_json::Value =
+            serde_json::from_slice(&site.chercher("/api/carte.json", false).corps).unwrap();
+        assert_eq!(carte["version"], 1);
+        assert!(carte["projets"].as_array().unwrap().len() >= 10);
+        assert!(!carte["quetes"].as_array().unwrap().is_empty());
+        assert!((1..=7).contains(&carte["niveau"].as_u64().unwrap()));
+        // ni jeton ni donnée privée : seulement des champs prévus
+        let texte = carte.to_string();
+        assert!(!texte.contains("ghp_") && !texte.contains("Bearer"));
     }
 
     #[test]
@@ -613,7 +666,10 @@ mod tests {
             "/api/etat.json",
             "/sante",
             "/assets/style.css",
-            "/assets/app.js",
+            "/assets/js/carte.js",
+            "/assets/js/monde.js",
+            "/assets/sansjs.css",
+            "/api/carte.json",
             "/favicon.svg",
             "/.well-known/security.txt",
         ] {

@@ -34,7 +34,8 @@ Chacune est justifiée (R19) : sans elle, il faudrait écrire et maintenir plus 
 
 ## Choix réfléchis
 
-- **JavaScript natif typé par JSDoc**, vérifié par `tsc` : la sécurité de TypeScript sans étape de compilation ni dépendance npm ([ADR 0001](adr/0001-pile-technique.md)).
+- **JavaScript natif en modules, typé par JSDoc** et vérifié par `tsc` (`make check`) : la sécurité de TypeScript sans étape de compilation, sans bundler et sans dépendance npm ([ADR 0001](adr/0001-pile-technique.md)). Une carte isométrique demande davantage de code que prévu (neuf modules, environ 95 Ko) : le découpage en modules et les types sont ce qui le garde lisible.
+- **Un canvas 2D, pas de WebGL ni de bibliothèque 3D** : la « 3D » est une projection isométrique dessinée à la main ([ADR 0004](adr/0004-carte-isometrique-sur-canvas.md)).
 - **Pas de framework web, pas de runtime `async`, pas de base de données.**
 
 ## Mettre à jour

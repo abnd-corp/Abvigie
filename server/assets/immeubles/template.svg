@@ -1,8 +1,0 @@
-<rect class="o" x="30" y="60" width="40" height="90"/>
-<rect class="w1" x="36" y="72" width="10" height="12"/>
-<rect class="w2" x="54" y="72" width="10" height="12"/>
-<rect class="w3" x="36" y="100" width="10" height="12"/>
-<rect class="w4" x="54" y="100" width="10" height="12"/>
-<rect class="p" x="44" y="130" width="12" height="20"/>
-<path class="l" d="M22 150V44M78 150V44M22 66h56M22 94h56M22 122h56M22 66L78 94M78 66L22 94M22 94L78 122M78 94L22 122"/>
-<path class="as" d="M22 44h42M64 44v10"/>

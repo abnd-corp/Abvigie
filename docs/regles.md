@@ -29,6 +29,10 @@ Les drapeaux sont triés par gravité (alerte, attention, info). Le fanion d'un 
 
 Les autres seuils (7 jours pour une PR, 2 topics) sont des constantes en tête de leur fichier : un seuil qui change se discute, il ne se règle pas sans trace.
 
+## Les quêtes
+
+La plupart des règles ont une **quête** jumelle : le projet remplit la quête quand la règle ne lève pas de drapeau. Voir [quetes.md](quetes.md).
+
 ## Ajouter une règle
 
 Voir [ajouter-une-regle.md](ajouter-une-regle.md).

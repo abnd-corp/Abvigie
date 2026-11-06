@@ -13,7 +13,19 @@ use crate::{
 use std::collections::HashMap;
 
 const STYLE: &str = include_str!("../assets/style.css");
-const SCRIPT: &str = include_str!("../assets/app.js");
+/// Les modules JavaScript de la carte, servis sous `/assets/js/<nom>.js`. L'ordre n'a pas d'importance.
+const MODULES: [(&str, &str); 9] = [
+    ("acteurs", include_str!("../assets/js/acteurs.js")),
+    ("batiments", include_str!("../assets/js/batiments.js")),
+    ("camera", include_str!("../assets/js/camera.js")),
+    ("carte", include_str!("../assets/js/carte.js")),
+    ("donnees", include_str!("../assets/js/donnees.js")),
+    ("interface", include_str!("../assets/js/interface.js")),
+    ("iso", include_str!("../assets/js/iso.js")),
+    ("monde", include_str!("../assets/js/monde.js")),
+    ("vignettes", include_str!("../assets/js/vignettes.js")),
+];
+const SANS_JS: &str = include_str!("../assets/sansjs.css");
 const FAVICON: &str = include_str!("../assets/favicon.svg");
 const IMAGE_PARTAGE: &[u8] = include_bytes!("../assets/og.png");
 
@@ -67,6 +79,31 @@ pub fn faut_remplacer(actuel: &Site, nouveau: &Site, partiels_d_affilee: &mut u3
     *partiels_d_affilee > PARTIELS_TOLERES
 }
 
+/// Ajoute la version à chaque import d'un module (`from './iso.js'` devient `from './iso.js?v=…'`).
+///
+/// Tous les modules d'une même version portent la même empreinte : une mise à jour change toutes les adresses d'un coup,
+/// donc un navigateur ne mélange jamais un module ancien avec un nouveau, et le cache peut durer un an.
+fn versionner(source: &str, version: &str) -> String {
+    let mut sortie = String::with_capacity(source.len() + 256);
+    let mut reste = source;
+    while let Some(debut) = reste.find("from './") {
+        let apres = debut + "from './".len();
+        sortie.push_str(&reste[..apres]);
+        reste = &reste[apres..];
+        match reste.find('\'') {
+            Some(fin) => {
+                sortie.push_str(&reste[..fin]);
+                sortie.push_str("?v=");
+                sortie.push_str(version);
+                reste = &reste[fin..];
+            }
+            None => break,
+        }
+    }
+    sortie.push_str(reste);
+    sortie
+}
+
 /// Empreinte FNV-1a 64 bits : sert d'`ETag` et de version de ressource. Pas de cryptographie ici.
 fn empreinte(octets: &[u8]) -> String {
     let mut h: u64 = 0xcbf2_9ce4_8422_2325;
@@ -95,10 +132,6 @@ const TEXTE: &str = "text/plain; charset=utf-8";
 /// Feuille de style : le fichier écrit à la main, plus une règle de couleur par bâtiment (voir `catalogue.rs`).
 fn feuille_de_style() -> String {
     let mut css = String::from(STYLE);
-    // la largeur d'un quartier suit son nombre de bâtiments (--nb), sans style en ligne : la CSP les interdit
-    for n in 1..=32 {
-        css.push_str(&format!(".qc{n}{{--nb:{n}}}\n"));
-    }
     for e in ENTREES.iter().chain([&GENERIQUE]) {
         let slug = if e.slug.is_empty() {
             "generique"
@@ -115,7 +148,14 @@ impl Site {
         let css = feuille_de_style();
         let (version_css, version_js) = (
             empreinte(css.as_bytes())[..8].to_string(),
-            empreinte(SCRIPT.as_bytes())[..8].to_string(),
+            empreinte(
+                MODULES
+                    .iter()
+                    .map(|(_, s)| *s)
+                    .collect::<String>()
+                    .as_bytes(),
+            )[..8]
+                .to_string(),
         );
         let r = Rendu {
             config,
@@ -135,11 +175,7 @@ impl Site {
                 &format!("/projets/{}", p.slug),
                 page(200, HTML, projet::page(&r, p), Cache::Court),
             );
-            let fragment = format!(
-                "{}{}",
-                render::ville::sprite(std::iter::once(p)),
-                projet::fiche(p, 2)
-            );
+            let fragment = projet::fiche(p, 2);
             ajouter(
                 &format!("/projets/{}\u{0}partiel", p.slug),
                 page(200, HTML, fragment, Cache::Court),
@@ -194,13 +230,28 @@ impl Site {
             "/assets/style.css",
             page(200, "text/css; charset=utf-8", css, Cache::Ressource),
         );
+        for (nom, source) in MODULES {
+            ajouter(
+                &format!("/assets/js/{nom}.js"),
+                page(
+                    200,
+                    "text/javascript; charset=utf-8",
+                    versionner(source, &version_js),
+                    Cache::Ressource,
+                ),
+            );
+        }
         ajouter(
-            "/assets/app.js",
+            "/assets/sansjs.css",
+            page(200, "text/css; charset=utf-8", SANS_JS, Cache::Ressource),
+        );
+        ajouter(
+            "/api/carte.json",
             page(
                 200,
-                "text/javascript; charset=utf-8",
-                SCRIPT,
-                Cache::Ressource,
+                "application/json; charset=utf-8",
+                render::carte::json(etat, config.endormi_jours),
+                Cache::Court,
             ),
         );
         ajouter(
@@ -219,11 +270,13 @@ impl Site {
             chemin: "/",
             json_ld: "",
             indexable: false,
+            entree: "vignettes",
+            classe: "fiche-page",
         };
         let introuvable = page(
             404,
             HTML,
-            render::document(&r, &meta, "", corps_404),
+            render::document(&r, &meta, corps_404),
             Cache::Court,
         );
 
@@ -247,6 +300,8 @@ impl Site {
             avertissements: vec![format!(
                 "Les données de GitHub ne sont pas encore disponibles ({raison})"
             )],
+            progression: crate::model::Progression::vide(),
+            acteurs: Vec::new(),
             projets: Vec::new(),
         };
         let mut site = Site::construire(&etat, config, maintenant);
@@ -281,6 +336,16 @@ impl Site {
 mod tests {
     use super::*;
 
+    #[test]
+    fn chaque_import_recoit_la_version() {
+        let source = "import { a } from './iso.js';\nimport { b, c } from './monde.js';\nconst x = 'pas un import';\n";
+        let v = versionner(source, "abc123");
+        assert!(v.contains("from './iso.js?v=abc123';"));
+        assert!(v.contains("from './monde.js?v=abc123';"));
+        assert!(v.contains("const x = 'pas un import';"));
+        assert_eq!(versionner("rien à faire", "v"), "rien à faire");
+    }
+
     fn site(partiel: bool, degrade: bool) -> Site {
         let mut s = Site::construire(
             &Etat {
@@ -293,6 +358,8 @@ mod tests {
                 } else {
                     Vec::new()
                 },
+                progression: crate::model::Progression::vide(),
+                acteurs: Vec::new(),
                 projets: Vec::new(),
             },
             &Config::default(),

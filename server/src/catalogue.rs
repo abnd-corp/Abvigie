@@ -1,7 +1,7 @@
-//! Le catalogue des bâtiments : pour chaque dépôt connu, son nom affiché, son quartier, sa couleur et son dessin.
+//! Le catalogue des bâtiments : pour chaque dépôt connu, son nom affiché, son quartier et sa couleur.
 //!
-//! Un dépôt absent d'ici apparaît quand même, avec le bâtiment générique, dans « Autres projets ».
-//! Pour donner un bâtiment à un nouveau projet : un fichier SVG dans `assets/immeubles/` et une ligne ci-dessous.
+//! Un dépôt absent d'ici apparaît quand même, avec un bâtiment généré, dans « Autres projets ».
+//! La **forme** du bâtiment est décrite côté navigateur, dans `assets/js/batiments.js`, sous le même `slug`.
 //! Voir `docs/ajouter-un-immeuble.md`.
 
 use crate::model::Quartier::{self, *};
@@ -16,14 +16,6 @@ pub struct Entree {
     pub quartier: Quartier,
     /// Couleur propre au bâtiment, dans la palette de la page.
     pub accent: &'static str,
-    /// Le contenu du `<symbol>` : le dessin du bâtiment (voir `assets/immeubles/LISEZMOI.md`).
-    pub dessin: &'static str,
-}
-
-macro_rules! dessin {
-    ($fichier:literal) => {
-        include_str!(concat!("../assets/immeubles/", $fichier, ".svg"))
-    };
 }
 
 pub const GENERIQUE: Entree = Entree {
@@ -32,7 +24,6 @@ pub const GENERIQUE: Entree = Entree {
     nom: "",
     quartier: Autres,
     accent: "#9ba4c8",
-    dessin: dessin!("generique"),
 };
 
 pub const ENTREES: &[Entree] = &[
@@ -42,7 +33,6 @@ pub const ENTREES: &[Entree] = &[
         nom: "Abatelier",
         quartier: Web,
         accent: "#f0a050",
-        dessin: dessin!("abatelier"),
     },
     Entree {
         depot: "Abcarte",
@@ -50,7 +40,6 @@ pub const ENTREES: &[Entree] = &[
         nom: "Abcarte",
         quartier: Web,
         accent: "#6aa7ff",
-        dessin: dessin!("abcarte"),
     },
     Entree {
         depot: "Abcom",
@@ -58,7 +47,6 @@ pub const ENTREES: &[Entree] = &[
         nom: "Abcom",
         quartier: Systemes,
         accent: "#5fcfb4",
-        dessin: dessin!("abcom"),
     },
     Entree {
         depot: "Abdns",
@@ -66,7 +54,6 @@ pub const ENTREES: &[Entree] = &[
         nom: "Abdns",
         quartier: Systemes,
         accent: "#9a8cff",
-        dessin: dessin!("abdns"),
     },
     Entree {
         depot: "abflow-skill-doc-test",
@@ -74,7 +61,6 @@ pub const ENTREES: &[Entree] = &[
         nom: "AbFlow",
         quartier: Web,
         accent: "#55c7e0",
-        dessin: dessin!("abflow"),
     },
     Entree {
         depot: "Abloue",
@@ -82,7 +68,6 @@ pub const ENTREES: &[Entree] = &[
         nom: "Abloue",
         quartier: Web,
         accent: "#ff7d6e",
-        dessin: dessin!("abloue"),
     },
     Entree {
         depot: "Abnd",
@@ -90,7 +75,6 @@ pub const ENTREES: &[Entree] = &[
         nom: "Abnd",
         quartier: Web,
         accent: "#f08fc0",
-        dessin: dessin!("abnd"),
     },
     Entree {
         depot: "AbSante",
@@ -98,7 +82,6 @@ pub const ENTREES: &[Entree] = &[
         nom: "AbSante",
         quartier: Web,
         accent: "#7ed39a",
-        dessin: dessin!("absante"),
     },
     Entree {
         depot: "Abvance",
@@ -106,7 +89,6 @@ pub const ENTREES: &[Entree] = &[
         nom: "Abvance",
         quartier: Web,
         accent: "#f4b860",
-        dessin: dessin!("abvance"),
     },
     Entree {
         depot: "Abvigie",
@@ -114,7 +96,6 @@ pub const ENTREES: &[Entree] = &[
         nom: "Abvigie",
         quartier: Outillage,
         accent: "#ffd98a",
-        dessin: dessin!("abvigie"),
     },
     Entree {
         depot: "Abwatch",
@@ -122,7 +103,6 @@ pub const ENTREES: &[Entree] = &[
         nom: "Abwatch",
         quartier: Systemes,
         accent: "#ff9a62",
-        dessin: dessin!("abwatch"),
     },
     Entree {
         depot: "AbX2T",
@@ -130,7 +110,6 @@ pub const ENTREES: &[Entree] = &[
         nom: "AbX2T",
         quartier: Systemes,
         accent: "#b4d96b",
-        dessin: dessin!("abx2t"),
     },
     Entree {
         depot: "Abyss",
@@ -138,7 +117,6 @@ pub const ENTREES: &[Entree] = &[
         nom: "Abyss",
         quartier: Web,
         accent: "#6f7df0",
-        dessin: dessin!("abyss"),
     },
     Entree {
         depot: "gouvernance",
@@ -146,7 +124,6 @@ pub const ENTREES: &[Entree] = &[
         nom: "Gouvernance",
         quartier: Outillage,
         accent: "#d9b45a",
-        dessin: dessin!("gouvernance"),
     },
     Entree {
         depot: "org-config",
@@ -154,7 +131,6 @@ pub const ENTREES: &[Entree] = &[
         nom: "Org-config",
         quartier: Outillage,
         accent: "#8fa8d0",
-        dessin: dessin!("org-config"),
     },
     Entree {
         depot: "template",
@@ -162,7 +138,6 @@ pub const ENTREES: &[Entree] = &[
         nom: "Template",
         quartier: Outillage,
         accent: "#b8c0dc",
-        dessin: dessin!("template"),
     },
 ];
 
@@ -206,36 +181,6 @@ mod tests {
                 e.accent
             );
             assert!(e.accent[1..].bytes().all(|o| o.is_ascii_hexdigit()));
-        }
-    }
-
-    #[test]
-    fn chaque_dessin_est_bien_forme_et_limite() {
-        for e in ENTREES.iter().chain([&GENERIQUE]) {
-            assert!(!e.dessin.contains("<script"), "{}", e.slug);
-            assert!(
-                !e.dessin.contains("style="),
-                "{} : pas de style en ligne (CSP)",
-                e.slug
-            );
-            assert!(
-                !e.dessin.contains("href"),
-                "{} : pas de lien dans un dessin",
-                e.slug
-            );
-            assert!(
-                e.dessin.len() < 2_500,
-                "{} : dessin trop lourd ({} octets)",
-                e.slug,
-                e.dessin.len()
-            );
-            for n in 1..=4 {
-                assert!(
-                    e.dessin.contains(&format!("class=\"w{n}\"")),
-                    "{} : fenêtre w{n} manquante",
-                    e.slug
-                );
-            }
         }
     }
 }

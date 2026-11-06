@@ -1,5 +1,5 @@
 {
-  "//": "Vérifie les types de server/assets/app.js grâce aux commentaires JSDoc, sans étape de compilation. Voir docs/stack.md.",
+  "//": "Vérifie les types des modules de server/assets/js/ grâce aux commentaires JSDoc, sans étape de compilation. Voir docs/stack.md.",
   "compilerOptions": {
     "allowJs": true,
     "checkJs": true,
@@ -8,5 +8,5 @@
     "target": "ES2022",
     "lib": ["ES2022", "DOM"]
   },
-  "files": ["server/assets/app.js"]
+  "include": ["server/assets/js/*.js"]
 }

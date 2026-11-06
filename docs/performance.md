@@ -6,18 +6,31 @@ Le principe : **le plus léger possible, mesuré, avec un budget qui échoue aux
 
 | Mesure | Valeur |
 |---|---|
-| Page d'accueil | 39,7 Ko, **7,5 Ko compressés** (gzip) |
-| `style.css` | 14,5 Ko, 4,5 Ko compressés |
-| `app.js` | 2,6 Ko, 1,2 Ko compressés |
-| Une fiche projet | 8,3 Ko, 2,6 Ko compressés |
-| **Poids total d'une première visite** | environ **13,5 Ko compressés** (page + style + script), sans police, sans image, sans ressource externe |
-| Binaire de livraison | **1,5 Mo** (TLS compris) |
-| Mémoire du processus | **2,3 Mo** au repos, 2,9 Mo après 4 000 requêtes |
-| Réponse à une requête | médiane **0,17 ms**, 99 % sous 0,3 ms |
-| Débit | environ 7 800 requêtes par seconde, limité par le client de test et non par le serveur |
-| Dépendances (transitives comprises) | 47 crates dans `Cargo.lock`, 0 avis de sécurité |
+| Page d'accueil (HTML, avec toutes les données et les quêtes) | 33,8 Ko, **7,0 Ko compressés** |
+| `style.css` | 16,5 Ko, 4,6 Ko compressés |
+| JavaScript de la carte (9 modules) | 95,8 Ko, **30,3 Ko compressés** |
+| Données de la carte (`/api/carte.json`) | 4,3 Ko, 0,9 Ko compressés, déjà incorporées dans la page |
+| **Poids total d'une première visite** | environ **42 Ko compressés**, sans police, sans image (hors image de partage, que seuls les réseaux sociaux chargent), sans ressource externe |
+| Visite suivante | presque rien : les modules et la feuille de style sont versionnés et mis en cache un an |
+| Une fiche projet | 7,4 Ko, 2,4 Ko compressés |
+| Binaire de livraison | **1,6 Mo** (TLS compris) |
+| Mémoire du serveur | environ 4 Mo |
+| Réponse à une requête | médiane 0,2 ms |
+| Dépendances Rust (transitives comprises) | 47 crates dans `Cargo.lock`, 0 avis de sécurité |
+| Dépendances JavaScript | **aucune** |
 
-Ces chiffres sont faciles à tenir parce que **répondre ne calcule rien** : toutes les pages sont fabriquées à l'avance ([architecture](architecture.md)).
+**Ce que coûte la carte.** Le JavaScript pèse 30 Ko compressés : c'est la part du jeu. Il est mis en cache longtemps et n'est chargé qu'une fois par version. Les modules ne sont pas minifiés : leurs commentaires, qui sont la documentation du code, se compressent très bien (le même code sans commentaires gagnerait environ 4 Ko compressés). **Si le poids devient un souci**, la première chose à faire est de minifier à la fabrication des pages.
+
+### Dans le navigateur (mesuré avec un navigateur sans carte graphique, donc pessimiste)
+
+| Mesure | Valeur |
+|---|---|
+| Animation d'ambiance, carte ouverte | environ **30 % d'un cœur** (dont 5 % de JavaScript, le reste est le dessin) |
+| Mouvement réduit (`prefers-reduced-motion`) | **0,2 %** : la carte ne se redessine que quand on agit dessus |
+| Onglet caché | 0 : l'animation s'arrête |
+| Mémoire du JavaScript | environ 3 Mo, 1 100 nœuds dans la page |
+
+L'animation d'ambiance (lumières, fumée, personnages) est plafonnée à **30 images par seconde** ; dès qu'on déplace la carte elle passe à la cadence de l'écran. Un navigateur avec carte graphique fait mieux.
 
 La compression n'est pas faite par le service : elle revient au proxy qui est devant (Traefik, Caddy), qui sait aussi faire du brotli. Voir [deploiement.md](deploiement.md).
 
@@ -25,9 +38,10 @@ La compression n'est pas faite par le service : elle revient au proxy qui est de
 
 | Élément | Limite |
 |---|---|
-| Page d'accueil | 20 Ko + 2,5 Ko par projet (donc environ 60 Ko pour 16 projets, avant compression) |
-| `style.css` | 16 Ko |
-| `app.js` | 4 Ko |
+| Page d'accueil | 14 Ko + 1,5 Ko par projet, avant compression |
+| `style.css` | 20 Ko |
+| JavaScript, tous modules ensemble | 110 Ko |
+| `/api/carte.json` | 1 Ko + 0,8 Ko par projet |
 | `favicon.svg` | 1 Ko |
 | `og.png` (image de partage) | 120 Ko, chargée par les réseaux sociaux et pas par la page |
 | Ressources externes | **aucune** : pas de police, de CDN, d'image distante, de script tiers |
@@ -46,7 +60,7 @@ Dépasser une limite fait échouer `la_page_reste_dans_son_budget_de_poids`. Le 
 | `dev.package."*"` | `debug = false` | aucune information de débogage pour les dépendances |
 | `dev` | `incremental = false` | le cache incrémental pesait 56 Mo pour un crate qui compile en quelques secondes |
 | `dev.build-override` | `debug = false` | pas de symboles pour les scripts de build |
-| `release` | `opt-level = "z"` | 1,45 Mo contre 1,68 Mo en `"s"` ; la vitesse n'a pas d'importance ici |
+| `release` | `opt-level = "z"` | un binaire plus petit d'environ 14 % qu'en `"s"` ; la vitesse n'a pas d'importance ici |
 | `release` | `lto = "fat"`, `codegen-units = 1`, `strip = "symbols"` | binaire minimal |
 | `release` | `panic = "unwind"` (le défaut) | gardé exprès, voir ci-dessous |
 
@@ -71,7 +85,7 @@ Trois dépendances directes, chacune justifiée ([stack.md](stack.md)) : `serde`
 
 ## Tester toutes les tailles d'écran
 
-La page est « fluide » : des unités relatives, `clamp()`, des grilles qui s'adaptent, des requêtes de média sur la largeur, la hauteur et l'orientation. Il n'y a pas trois tailles figées. Vérifié dans un vrai navigateur, **sans aucun défilement horizontal**, sur :
+La page est « fluide » : des unités relatives, `clamp()`, des grilles qui se réorganisent, des requêtes de média sur la largeur, la hauteur et l'orientation. Il n'y a pas trois tailles figées. Vérifié dans un vrai navigateur, avec la politique de sécurité réelle, **sans aucune erreur ni défilement horizontal**, sur :
 
 | Format | Taille |
 |---|---|
@@ -84,8 +98,16 @@ La page est « fluide » : des unités relatives, `clamp()`, des grilles qui s'a
 | 4K | 3840 × 2160 |
 | Très haut | 400 × 2400 |
 | Très court | 1600 × 260 |
-| Extrême, vérifié à la main | 200 px de large |
 
-Aussi vérifiés : thèmes clair et sombre (`prefers-color-scheme`), mouvement réduit (`prefers-reduced-motion`), zones sûres des téléphones à encoche, couleurs forcées, impression, et navigation au clavier.
+La mise en page change de forme selon l'espace :
 
-Sous 34 rem de large, la ville est masquée et la liste des projets prend le relais (chaque carte porte la miniature de son bâtiment) : une ville illisible ne sert à personne.
+| Espace | Disposition |
+|---|---|
+| Large | la carte à gauche, le panneau à droite (de 19 à 34 rem) |
+| Portrait (téléphone, tablette) | la carte en haut (la moitié de la hauteur), le panneau dessous, qui défile |
+| Paysage très bas (téléphone couché) | la carte et un panneau étroit côte à côte, la barre du haut réduite |
+| Très étroit (moins de 20 rem) | les compteurs passent sur deux colonnes, les cartes de projet s'empilent |
+
+Aussi vérifiés : mouvement réduit, couleurs forcées, zones sûres des téléphones à encoche, impression (la carte est retirée, le contenu s'imprime), et la page **sans JavaScript** (tout s'affiche à la suite).
+
+Sur la carte, le cadrage initial suit la taille de la fenêtre, et les noms de projets n'apparaissent que si la carte est assez zoomée pour qu'ils restent lisibles.

@@ -17,7 +17,70 @@ pub struct Etat {
     pub resume: Resume,
     /// Ce qui n'a pas pu être lu (limite de GitHub, dépôt illisible…). Vide quand tout va bien.
     pub avertissements: Vec<String>,
+    pub progression: Progression,
+    /// Les personnes et les robots qui se promènent dans la ville : les auteurs d'issues et de pull requests.
+    pub acteurs: Vec<Acteur>,
     pub projets: Vec<Projet>,
+}
+
+/// Le niveau de la ville, calculé sur des faits publics : plus les projets respectent la charte, plus la ville monte.
+#[derive(Debug, Clone, Serialize)]
+pub struct Progression {
+    pub niveau: u32,
+    pub titre: &'static str,
+    pub xp: u32,
+    /// XP si tous les projets avaient accompli toutes les quêtes.
+    pub xp_max: u32,
+    /// XP où a commencé le niveau actuel.
+    pub xp_debut: u32,
+    /// XP du niveau suivant ; absent au dernier niveau.
+    pub xp_suivant: Option<u32>,
+    pub quetes: Vec<Quete>,
+}
+
+impl Progression {
+    pub fn vide() -> Progression {
+        Progression {
+            niveau: 1,
+            titre: "Hameau",
+            xp: 0,
+            xp_max: 0,
+            xp_debut: 0,
+            xp_suivant: None,
+            quetes: Vec::new(),
+        }
+    }
+}
+
+/// Une quête : un objectif de la charte à atteindre sur tous les projets. Elle se complète d'elle-même
+/// quand les faits changent : personne ne coche rien.
+#[derive(Debug, Clone, Serialize)]
+pub struct Quete {
+    pub id: &'static str,
+    pub titre: &'static str,
+    pub description: &'static str,
+    pub regle: &'static str,
+    /// XP gagnés par projet qui remplit l'objectif.
+    pub points: u32,
+    pub fait: usize,
+    pub total: usize,
+    /// Les projets qui n'y sont pas encore (leurs `slug`), à éclairer sur la carte.
+    pub a_traiter: Vec<String>,
+}
+
+impl Quete {
+    pub fn accomplie(&self) -> bool {
+        self.total > 0 && self.fait >= self.total
+    }
+}
+
+/// Quelqu'un (ou quelque robot) qui travaille dans l'organisation, vu depuis ses issues et ses pull requests.
+#[derive(Debug, Clone, Serialize)]
+pub struct Acteur {
+    pub login: String,
+    pub robot: bool,
+    /// Nombre d'issues et de pull requests ouvertes qu'il a écrites.
+    pub activite: usize,
 }
 
 /// Les compteurs de l'en-tête.

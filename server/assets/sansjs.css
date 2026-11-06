@@ -1,0 +1,7 @@
+/* Chargé seulement quand JavaScript est désactivé (<noscript>) : la carte laisse la place au contenu, tout s'affiche à la suite. */
+body.jeu { overflow: auto; block-size: auto; }
+.jeu-zone { display: block; block-size: auto; }
+.carte-zone { display: none; }
+.lateral { inline-size: auto; max-inline-size: 60rem; margin-inline: auto; overflow: visible; block-size: auto; border: 0; }
+.o-case, .onglets { display: none; }
+.onglet { display: block !important; padding-block: 1rem; border-block-end: 1px solid var(--trait); }

@@ -39,7 +39,7 @@ Ce n'est **pas** un serveur Internet complet : il est prévu pour tourner **derr
 | `Cross-Origin-Opener-Policy` | `same-origin` |
 | `Strict-Transport-Security` | un an, sous-domaines compris (ignoré en HTTP simple) |
 
-La CSP n'autorise **ni script en ligne, ni style en ligne, ni origine externe**. C'est pour cela que le code n'a aucun attribut `style=` : les couleurs et les largeurs passent par des classes CSS, générées côté serveur. Un test (`aucune_ressource_externe_dans_les_pages`) vérifie qu'aucune page ne contient `style="`, `onclick=`, `javascript:`, `<iframe`, `<form`, ni script ou feuille de style externes.
+La CSP n'autorise **ni script en ligne, ni style en ligne, ni origine externe**. C'est pour cela que le code n'a aucun attribut `style=` dans le HTML : les couleurs passent par des classes CSS générées côté serveur. Le JavaScript, lui, ne fait que des modifications du modèle d'objets de style (`element.style.width = …`, pour dimensionner une vignette), que la CSP autorise : ce ne sont pas des styles en ligne. Les modules JavaScript viennent tous du même serveur (`script-src 'self'`) et le JavaScript n'utilise ni `eval`, ni `new Function`, ni `innerHTML` sur autre chose que du HTML du même serveur. Un test (`aucune_ressource_externe_dans_les_pages`) vérifie qu'aucune page ne contient `style="`, `onclick=`, `javascript:`, `<iframe`, `<form`, ni script ou feuille de style externes.
 
 ## Les données qui viennent de GitHub sont non fiables
 
@@ -48,7 +48,9 @@ Un nom de dépôt, une description ou un titre d'issue peut contenir n'importe q
 - **Toute chaîne passe par `esc()`** (`render/mod.rs`) avant d'entrer dans une page ; les caractères de contrôle sont retirés. Des tests vérifient qu'un nom de projet malveillant ne produit aucun HTML.
 - **Le JSON-LD** (dans un `<script type="application/ld+json">`) est sérialisé avec `</` remplacé par `<\/` : impossible de fermer la balise (testé).
 - **Les noms de dépôt** qui servent dans une URL ou un nom de fichier sont validés (`nom_sur`) : seulement lettres, chiffres, `-`, `_`, `.`.
-- **Le panneau latéral** reçoit du HTML qui vient du même serveur, déjà échappé. Le script ne construit jamais de HTML à partir de données.
+- **Le panneau latéral** reçoit du HTML qui vient du même serveur, déjà échappé. Le script ne construit jamais de HTML à partir de données. Les noms dessinés **sur la carte** (projets, pseudos) le sont avec `fillText` du canvas, qui n'interprète rien : pas de HTML, donc pas d'injection possible.
+- **Les données de la carte** incorporées dans la page (`<script type="application/json">`) sont sérialisées avec `</` remplacé par `<\/`, comme le JSON-LD, et ne contiennent que des champs prévus (testé : ni jeton, ni titre d'issue, ni description).
+- **Les personnages** sont des identifiants GitHub publics, vus dans les issues et pull requests ouvertes. Aucune autre information sur eux n'est lue, et rien de personnel n'est affiché.
 
 ## Le jeton GitHub (R9, R18)
 
