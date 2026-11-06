@@ -10,7 +10,7 @@ command -v gh >/dev/null || { echo "gh est requis (https://cli.github.com)" >&2;
 command -v jq >/dev/null || { echo "jq est requis" >&2; exit 1; }
 
 mkdir -p "$DOSSIER"
-rm -f "$DOSSIER"/*.json
+rm -f "$DOSSIER"/*.json "$DOSSIER/capture.txt"
 
 # Seuls les champs lus par le serveur sont gardés (voir server/src/sources/brut.rs) : fichiers petits, rien de superflu.
 gh api --paginate "/orgs/$ORG/repos?type=public&per_page=100" \
@@ -35,4 +35,6 @@ jq -r '.[] | "\(.name) \(.has_issues)"' "$DOSSIER/depots.json" | while read -r n
     > "$DOSSIER/$sur.executions.json"
   echo "capturé : $nom"
 done
+# la date de la capture : une démonstration figée raisonne à cette date, pas à celle du jour
+date -u +%Y-%m-%dT%H:%M:%SZ > "$DOSSIER/capture.txt"
 echo "Fait : $(ls "$DOSSIER" | wc -l | tr -d ' ') fichiers dans $DOSSIER"

@@ -8,7 +8,7 @@ Le tableau de bord public de l'organisation [Abnd](https://github.com/abnd-corp)
 - **Des personnages se promènent** : les personnes et les robots qui travaillent dans l'organisation, vus depuis leurs issues et pull requests.
 - **La ville a des quêtes.** Les quêtes sont les objectifs de la charte à atteindre sur tous les projets ; elles se complètent d'elles-mêmes quand les faits changent. Survoler une quête éclaire sur la carte les projets qui lui restent à faire.
 
-> **État : une idée, pas encore une version.** Le prototype fonctionne en local avec des données de démonstration. Il n'y a pas encore de CI, d'image Docker ni d'hébergement : tout cela viendra avec la V0.1 ([issue #1](https://github.com/abnd-corp/Abvigie/issues/1)).
+> **État : une V1 de démonstration.** Elle tourne en local et se publie en site statique sur GitHub Pages, avec des données figées. Pas encore d'image Docker ni d'hébergement du serveur : cela viendra avec la V0.1 ([issue #1](https://github.com/abnd-corp/Abvigie/issues/1)).
 
 ## Essayer
 
@@ -18,7 +18,9 @@ make run          # http://127.0.0.1:8080, avec des données de démonstration
 
 Prérequis : Rust (voir `rust-version` dans `Cargo.toml`). Rien d'autre : pas de Node, pas de base de données, pas de réseau.
 
-Glisser pour se déplacer, molette ou pincement pour zoomer, cliquer un bâtiment pour sa fiche. Au clavier : flèches, `+` et `-`.
+Les réglages (délai de lecture de GitHub, adresse publique…) sont dans [`abvigie.conf`](abvigie.conf), commenté. Par défaut GitHub est lu **toutes les 6 heures** ; pour une page à jour, mettre `rafraichir = 15min`.
+
+`make pages` écrit le **site statique** dans `public/` (mode `--export`, pour GitHub Pages : [docs/deploiement.md](docs/deploiement.md#le-mode-statique--github-pages)).
 
 Pour lire GitHub en direct au lieu des données de démonstration : `cargo run`. Sans jeton, GitHub n'accepte que 60 requêtes par heure et une seule lecture en consomme 33 : c'est bon pour essayer une fois, pas pour tenir ([le déploiement](docs/deploiement.md)).
 

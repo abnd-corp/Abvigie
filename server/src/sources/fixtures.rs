@@ -36,6 +36,11 @@ impl Source for Fixtures {
         self.lire(&format!("{}.tickets.json", nom_sur(&depot.name)))
     }
 
+    fn instant(&self) -> Option<i64> {
+        let texte = fs::read_to_string(self.dossier.join("capture.txt")).ok()?;
+        crate::dates::analyser(texte.trim())
+    }
+
     fn executions(&self, depot: &Depot) -> Result<Vec<Execution>, Erreur> {
         let e: EnveloppeExecutions =
             self.lire(&format!("{}.executions.json", nom_sur(&depot.name)))?;

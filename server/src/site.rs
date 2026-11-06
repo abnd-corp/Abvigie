@@ -10,7 +10,11 @@ use crate::{
     model::{Etat, Resume, VERSION_SCHEMA},
     render::{self, Meta, Rendu, accueil, esc, projet, seo},
 };
-use std::collections::HashMap;
+use std::{
+    collections::HashMap,
+    fs,
+    path::{Path, PathBuf},
+};
 
 const STYLE: &str = include_str!("../assets/style.css");
 /// Les modules JavaScript de la carte, servis sous `/assets/js/<nom>.js`. L'ordre n'a pas d'importance.
@@ -104,6 +108,49 @@ fn versionner(source: &str, version: &str) -> String {
     sortie
 }
 
+/// Préfixe de `base` tout lien du HTML qui commence par « / » (`href="/x"` devient `href="/Abvigie/x"`).
+fn avec_base(html: &str, base: &str) -> String {
+    if base.is_empty() {
+        return html.to_string();
+    }
+    html.replace("href=\"/", &format!("href=\"{base}/"))
+        .replace("src=\"/", &format!("src=\"{base}/"))
+}
+
+/// Le fichier où écrire une page statique, ou `None` si elle n'a pas à l'être ou si son chemin est suspect.
+///
+/// `/` devient `index.html`, `/projets/x` devient `projets/x/index.html`, la fiche partielle devient
+/// `projets/x/partiel.html`, un fichier avec extension (`/llms.txt`) reste tel quel.
+fn fichier_statique(cle: &str) -> Option<PathBuf> {
+    let (chemin, partiel) = match cle.split_once('\u{0}') {
+        Some((c, "partiel")) => (c, true),
+        Some(_) => return None,
+        None => (cle, false),
+    };
+    if chemin == "/sante" {
+        return None; // une sonde de supervision : elle n'a pas de sens sur des fichiers
+    }
+    let mut sortie = PathBuf::new();
+    let morceaux: Vec<&str> = chemin.split('/').filter(|m| !m.is_empty()).collect();
+    for m in &morceaux {
+        // un nom venu de GitHub finit dans un chemin de fichier : rien qui puisse sortir du dossier
+        let sain = !m.starts_with("..")
+            && m.bytes()
+                .all(|o| o.is_ascii_alphanumeric() || matches!(o, b'-' | b'_' | b'.'));
+        if !sain {
+            return None;
+        }
+        sortie.push(m);
+    }
+    let derniere = morceaux.last().copied().unwrap_or("");
+    if partiel {
+        sortie.push("partiel.html");
+    } else if morceaux.is_empty() || !derniere.contains('.') {
+        sortie.push("index.html");
+    }
+    Some(sortie)
+}
+
 /// Empreinte FNV-1a 64 bits : sert d'`ETag` et de version de ressource. Pas de cryptographie ici.
 fn empreinte(octets: &[u8]) -> String {
     let mut h: u64 = 0xcbf2_9ce4_8422_2325;
@@ -164,18 +211,24 @@ impl Site {
             version_js: &version_js,
         };
 
+        // en mode statique, le site vit souvent sous un dossier (https://org.github.io/Abvigie/) : les liens qui
+        // commencent par « / » doivent en tenir compte
+        let statique = config.exporter.is_some();
+        let base = config.chemin_base();
+        let html = |s: String| if statique { avec_base(&s, &base) } else { s };
+
         let mut pages = HashMap::new();
         let mut ajouter = |chemin: &str, p: Page| {
             pages.insert(chemin.to_string(), p);
         };
 
-        ajouter("/", page(200, HTML, accueil::page(&r), Cache::Court));
+        ajouter("/", page(200, HTML, html(accueil::page(&r)), Cache::Court));
         for p in &etat.projets {
             ajouter(
                 &format!("/projets/{}", p.slug),
-                page(200, HTML, projet::page(&r, p), Cache::Court),
+                page(200, HTML, html(projet::page(&r, p)), Cache::Court),
             );
-            let fragment = projet::fiche(p, 2);
+            let fragment = html(projet::fiche(p, 2));
             ajouter(
                 &format!("/projets/{}\u{0}partiel", p.slug),
                 page(200, HTML, fragment, Cache::Court),
@@ -250,7 +303,7 @@ impl Site {
             page(
                 200,
                 "application/json; charset=utf-8",
-                render::carte::json(etat, config.endormi_jours),
+                render::carte::json(etat, config.endormi_jours, statique),
                 Cache::Court,
             ),
         );
@@ -276,7 +329,7 @@ impl Site {
         let introuvable = page(
             404,
             HTML,
-            render::document(&r, &meta, corps_404),
+            html(render::document(&r, &meta, corps_404)),
             Cache::Court,
         );
 
@@ -317,6 +370,34 @@ impl Site {
     }
 
     /// La page d'un chemin, ou la page 404. `partiel` demande le fragment du panneau latéral.
+    /// Écrit le site en fichiers dans `dossier` (mode statique) et renvoie le nombre de fichiers écrits.
+    ///
+    /// Ajoute `404.html` (GitHub Pages le sert pour les pages inconnues) et `.nojekyll` (sans lui, Pages ignore
+    /// `.well-known/`).
+    pub fn exporter(&self, dossier: &Path) -> Result<usize, String> {
+        let mut ecrits = 0;
+        let mut ecrire = |relatif: &Path, octets: &[u8]| -> Result<(), String> {
+            let cible = dossier.join(relatif);
+            if let Some(parent) = cible.parent() {
+                fs::create_dir_all(parent).map_err(|e| format!("{} : {e}", parent.display()))?;
+            }
+            fs::write(&cible, octets).map_err(|e| format!("{} : {e}", cible.display()))?;
+            ecrits += 1;
+            Ok(())
+        };
+        let mut cles: Vec<&String> = self.pages.keys().collect();
+        cles.sort();
+        for cle in cles {
+            match fichier_statique(cle) {
+                Some(f) => ecrire(&f, &self.pages[cle].corps)?,
+                None => continue,
+            }
+        }
+        ecrire(Path::new("404.html"), &self.introuvable.corps)?;
+        ecrire(Path::new(".nojekyll"), b"")?;
+        Ok(ecrits)
+    }
+
     pub fn chercher(&self, chemin: &str, partiel: bool) -> &Page {
         let cle = if partiel {
             format!("{chemin}\u{0}partiel")
@@ -404,5 +485,43 @@ mod tests {
             &site(true, false),
             &mut n
         ));
+    }
+
+    #[test]
+    fn les_liens_absolus_prennent_le_dossier_de_base() {
+        let h = "<a href=\"/projets/x\">x</a><link href=\"/favicon.svg\"><script src=\"/assets/js/carte.js\"></script><a href=\"https://github.com/x\">";
+        let b = avec_base(h, "/Abvigie");
+        assert!(b.contains("href=\"/Abvigie/projets/x\""));
+        assert!(b.contains("href=\"/Abvigie/favicon.svg\""));
+        assert!(b.contains("src=\"/Abvigie/assets/js/carte.js\""));
+        assert!(
+            b.contains("href=\"https://github.com/x\""),
+            "les liens externes ne bougent pas"
+        );
+        assert_eq!(avec_base(h, ""), h);
+    }
+
+    #[test]
+    fn chaque_page_a_son_fichier_et_rien_ne_sort_du_dossier() {
+        let f = |c: &str| fichier_statique(c).map(|p| p.to_string_lossy().into_owned());
+        assert_eq!(f("/").as_deref(), Some("index.html"));
+        assert_eq!(
+            f("/projets/abcom").as_deref(),
+            Some("projets/abcom/index.html")
+        );
+        assert_eq!(
+            f("/projets/abcom\u{0}partiel").as_deref(),
+            Some("projets/abcom/partiel.html")
+        );
+        assert_eq!(f("/llms.txt").as_deref(), Some("llms.txt"));
+        assert_eq!(f("/api/etat.json").as_deref(), Some("api/etat.json"));
+        assert_eq!(
+            f("/.well-known/security.txt").as_deref(),
+            Some(".well-known/security.txt")
+        );
+        assert_eq!(f("/sante"), None);
+        for mauvais in ["/projets/../x", "/projets/a b", "/projets/é", "/../x"] {
+            assert_eq!(f(mauvais), None, "{mauvais}");
+        }
     }
 }

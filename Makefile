@@ -1,5 +1,5 @@
 # Cibles communes de l'organisation (charte R21) : build, test, lint, check. Un projet peut en ajouter, pas en retirer.
-.PHONY: help build test lint check run fixtures audit js size clean
+.PHONY: help build test lint check run pages fixtures audit js size clean
 
 help: ## Liste les commandes
 	@grep -E '^[a-z-]+:.*##' $(MAKEFILE_LIST) | sed 's/:.*##/ :/'
@@ -18,6 +18,9 @@ check: lint test ## Ce qui doit passer avant d'ouvrir une PR (R4)
 
 run: ## Lance le site en local sur http://127.0.0.1:8080, avec les données de démonstration
 	cargo run --locked -- --fixtures server/fixtures
+
+pages: ## Écrit le site statique (démonstration, GitHub Pages) dans public/
+	cargo run --release --locked -- --fixtures server/fixtures --export public
 
 fixtures: ## Recapture les données publiques de l'organisation (utilise gh)
 	scripts/capturer-fixtures.sh

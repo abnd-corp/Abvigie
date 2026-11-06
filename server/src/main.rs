@@ -1,7 +1,9 @@
 //! Abvigie : le tableau de bord public de l'organisation Abnd.
 //!
 //! Au démarrage : lire GitHub (ou des fichiers locaux), fabriquer toutes les pages, puis servir.
-//! Toutes les 15 minutes : recommencer, et remplacer les pages d'un coup. Voir `docs/architecture.md`.
+//! À l'intervalle réglé dans `abvigie.conf` (6 heures par défaut) : recommencer, et remplacer les pages d'un coup.
+//! Avec `--export <dossier>`, écrire le site en fichiers statiques (GitHub Pages) et s'arrêter.
+//! Voir `docs/architecture.md`.
 
 mod catalogue;
 mod collect;
@@ -21,6 +23,7 @@ use sources::{Source, fixtures::Fixtures, github::GitHub};
 use std::{
     net::TcpListener,
     panic::{self, AssertUnwindSafe},
+    path::Path,
     process::ExitCode,
     sync::{Arc, PoisonError, RwLock},
     thread,
@@ -30,11 +33,13 @@ use std::{
 const AIDE: &str = "\
 Abvigie : tableau de bord public de l'organisation Abnd.
 
-Utilisation : abvigie [--fixtures <dossier>] [--adresse <hôte:port>]
+Utilisation : abvigie [--config <fichier>] [--fixtures <dossier>] [--adresse <hôte:port>]
+              abvigie --export <dossier> [--fixtures <dossier>]   (site statique, sans serveur)
 
-Réglages par variables d'environnement : voir docs/deploiement.md
+Réglages : fichier abvigie.conf (commenté), puis variables d'environnement, puis arguments.
   ABVIGIE_ORG, ABVIGIE_ADRESSE, ABVIGIE_URL, ABVIGIE_RAFRAICHIR,
-  ABVIGIE_ENDORMI_JOURS, ABVIGIE_REVUE_JOURS, GITHUB_TOKEN
+  ABVIGIE_ENDORMI_JOURS, ABVIGIE_REVUE_JOURS, ABVIGIE_CONFIG, GITHUB_TOKEN (jamais dans le fichier)
+Voir docs/deploiement.md
 ";
 
 fn main() -> ExitCode {
@@ -70,6 +75,10 @@ fn executer(arguments: &[String]) -> Result<(), String> {
         None => Box::new(GitHub::new(&config)),
     };
 
+    if let Some(dossier) = &config.exporter {
+        return exporter(source.as_ref(), &config, dossier);
+    }
+
     let ecouteur = TcpListener::bind(&config.adresse)
         .map_err(|e| format!("impossible d'écouter sur {} : {e}", config.adresse))?;
     let origine = match (&config.fixtures, &config.jeton) {
@@ -82,6 +91,16 @@ fn executer(arguments: &[String]) -> Result<(), String> {
         env!("CARGO_PKG_VERSION"),
         config.adresse,
         config.organisation
+    ));
+    journal(&format!(
+        "configuration : {} · lecture de GitHub toutes les {}",
+        config
+            .fichier
+            .as_ref()
+            .map_or("valeurs par défaut".to_string(), |f| f
+                .display()
+                .to_string()),
+        config::duree_lisible(config.rafraichir_secondes)
     ));
 
     let courant = match fabriquer(source.as_ref(), &config) {
@@ -130,12 +149,32 @@ fn executer(arguments: &[String]) -> Result<(), String> {
     http::servir(ecouteur, courant).map_err(|e| format!("serveur arrêté : {e}"))
 }
 
+/// Mode statique : fabrique le site une fois, l'écrit en fichiers dans `dossier`, puis s'arrête.
+fn exporter(source: &dyn Source, config: &Config, dossier: &Path) -> Result<(), String> {
+    let site = fabriquer(source, config)?;
+    if site.partiel {
+        // un site statique est publié tel quel : on préfère ne rien publier qu'une ville qui affiche « rien à signaler » à tort
+        return Err(
+            "lecture partielle des données : rien n'est écrit (voir les avertissements)".into(),
+        );
+    }
+    let n = site.exporter(dossier)?;
+    journal(&format!(
+        "{} projets, {n} fichiers écrits dans {} (adresse publique : {})",
+        site.projets,
+        dossier.display(),
+        config.url_publique
+    ));
+    Ok(())
+}
+
 /// Lit les données et fabrique le site. Une panique est transformée en erreur : elle ne doit jamais tuer le service.
 fn fabriquer(source: &dyn Source, config: &Config) -> Result<Site, String> {
-    let maintenant = dates::maintenant();
+    let maintenant = source.instant().unwrap_or_else(dates::maintenant);
     panic::catch_unwind(AssertUnwindSafe(|| {
         let etat = collect::construire(source, config, maintenant).map_err(|e| e.to_string())?;
-        Ok(Site::construire(&etat, config, maintenant))
+        // la date réelle, pas celle d'une capture figée : elle sert à l'expiration de security.txt
+        Ok(Site::construire(&etat, config, dates::maintenant()))
     }))
     .unwrap_or_else(|_| Err("erreur interne pendant la fabrication des pages".into()))
 }

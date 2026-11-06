@@ -17,6 +17,7 @@ struct Carte<'a> {
     version: u32,
     genere_le: &'a str,
     endormi_jours: i64,
+    statique: bool,
     quartiers: Vec<QuartierCarte>,
     projets: Vec<ProjetCarte<'a>>,
     acteurs: Vec<ActeurCarte<'a>>,
@@ -63,7 +64,8 @@ struct QueteCarte<'a> {
 }
 
 /// Les données de la carte, en JSON compact.
-pub fn json(etat: &Etat, endormi_jours: i64) -> String {
+/// `statique` : le site est exporté en fichiers (GitHub Pages) ; la page va chercher les fiches dans `partiel.html`.
+pub fn json(etat: &Etat, endormi_jours: i64, statique: bool) -> String {
     let projets = etat
         .projets
         .iter()
@@ -90,6 +92,7 @@ pub fn json(etat: &Etat, endormi_jours: i64) -> String {
         version: VERSION,
         genere_le: &etat.genere_le,
         endormi_jours,
+        statique,
         quartiers: Quartier::TOUS
             .iter()
             .map(|q| QuartierCarte {
@@ -124,8 +127,8 @@ pub fn json(etat: &Etat, endormi_jours: i64) -> String {
 }
 
 /// Le même JSON, prêt à entrer dans un `<script type="application/json">` : `</` ne peut pas y fermer la balise.
-pub fn json_pour_page(etat: &Etat, endormi_jours: i64) -> String {
-    json(etat, endormi_jours)
+pub fn json_pour_page(etat: &Etat, endormi_jours: i64, statique: bool) -> String {
+    json(etat, endormi_jours, statique)
         .replace("</", "<\\/")
         .replace("<!--", "<\\!--")
 }

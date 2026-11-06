@@ -3,7 +3,7 @@
 ## En une image
 
 ```
-                     toutes les 15 minutes
+                     à l'intervalle réglé (6 h)
  API publique   ┌──────────────────────────────────────────────┐
  de GitHub ───► │ sources ──► collect ──► rules ──► Etat       │
  (ou fichiers)  │                                    │         │
@@ -28,7 +28,7 @@ Le service fait deux choses seulement : **rafraîchir** (lire GitHub, recalculer
 | `render/` | Fabriquer les pages HTML (écran de jeu, fiche, fragment du panneau), les données de la carte, le SEO/GEO. | GitHub |
 | `site.rs` | Fabriquer **toutes** les pages d'un `Etat` et les ranger dans une table ; servir les modules JavaScript avec leur version. | |
 | `http.rs` | Servir la table : un serveur HTTP/1.1 strict (`GET` et `HEAD`, rien d'autre). | tout le reste |
-| `main.rs` | Brancher le tout, et relancer la lecture toutes les `ABVIGIE_RAFRAICHIR` secondes. | |
+| `main.rs` | Brancher le tout, et relancer la lecture au rythme de `rafraichir` (6 h par défaut), ou, avec `--export`, écrire le site en fichiers et s'arrêter. | |
 | `assets/js/` | La carte, dessinée dans le navigateur ([carte.md](carte.md)). | GitHub, Rust |
 
 La frontière importante est entre `collect` et le reste : **GitHub n'existe que dans `sources/`**. Pour changer de source de données, on ne touche pas aux règles, aux quêtes ni aux pages. Une autre frontière : **la carte ne connaît que `/api/carte.json`**, un résumé compact et versionné de l'état, publié par `render/carte.rs`.

@@ -28,4 +28,9 @@ pub trait Source: Send + Sync {
     fn tickets(&self, depot: &Depot) -> Result<Vec<Ticket>, Erreur>;
     /// Les dernières exécutions de la CI d'un dépôt.
     fn executions(&self, depot: &Depot) -> Result<Vec<Execution>, Erreur>;
+    /// L'instant auquel les données ont été prises, quand il n'est pas « maintenant » : une capture figée raisonne à sa
+    /// date (sinon, quelques mois plus tard, tous ses projets paraîtraient endormis).
+    fn instant(&self) -> Option<i64> {
+        None
+    }
 }

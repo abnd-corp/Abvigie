@@ -18,6 +18,6 @@ Le site doit être bien lu par les moteurs de recherche (SEO) et par les assista
 
 - **Positif** : contenu lisible par tout robot, page affichée dès la première réponse, poids minimal, réponse en moins d'une demi-milliseconde, rien à calculer à la requête.
 - **Positif** : très simple à raisonner, et peu de surface d'attaque (aucune donnée de la requête ne sert à fabriquer une page).
-- **Négatif** : les données ont au plus l'âge du dernier rafraîchissement (15 minutes par défaut). Acceptable pour un tableau de bord.
+- **Négatif** : les données ont au plus l'âge du dernier rafraîchissement (6 heures par défaut, réglable dans `abvigie.conf`). Acceptable pour un tableau de bord.
 - **Négatif** : toute chaîne venue de GitHub doit être échappée avant d'entrer dans une page. C'est centralisé dans `render::esc` et vérifié par des tests ([sécurité](../securite.md)).
 - **À surveiller** : les pages fabriquées à l'avance occupent la mémoire de façon linéaire : 409 Ko pour 16 projets (mesuré), soit environ 20 Ko par projet en comptant la page, le fragment du panneau et la part de l'accueil et du JSON. Sans importance jusqu'à plusieurs centaines de projets.

@@ -39,7 +39,7 @@ pub fn page(r: &Rendu) -> String {
     let _ = write!(
         h,
         "<script type=\"application/json\" id=\"donnees-carte\">{}</script>",
-        carte::json_pour_page(e, r.config.endormi_jours)
+        carte::json_pour_page(e, r.config.endormi_jours, r.config.exporter.is_some())
     );
     document(r, &meta, &h)
 }
@@ -175,11 +175,28 @@ fn fiche(r: &Rendu) -> String {
          <li><a href=\"https://github.com/{org}/Abvigie\">Le code d'Abvigie (AGPL-3.0-or-later)</a></li>\
          <li><a href=\"/api/etat.json\">Les données en JSON</a></li>\
          <li><a href=\"/llms.txt\">Résumé pour les assistants IA (llms.txt)</a></li></ul>\
-         <p class=\"menu\">Les données viennent de l'API publique de GitHub, sans aucune donnée privée, et sont relues toutes les {} minutes. \
+         <p class=\"menu\">{} \
          L'équipe compte les personnes distinctes (identifiants GitHub publics) vues dans les issues et pull requests ouvertes, les robots les automatisations qui en ouvrent.</p>",
-        r.config.rafraichir_secondes / 60
+        origine_des_donnees(r)
     );
     h
+}
+
+/// D'où viennent les données, en une phrase : une capture figée (démonstration) ou GitHub en direct.
+fn origine_des_donnees(r: &Rendu) -> String {
+    if r.config.fixtures.is_some() {
+        format!(
+            "<strong>Démonstration</strong> : ces données sont une capture de l'API publique de GitHub prise le {}, sans aucune donnée privée. \
+             Elles sont figées et ne se mettent pas à jour.",
+            esc(&crate::dates::analyser(&r.etat.genere_le)
+                .map_or(r.etat.genere_le.clone(), crate::dates::date_longue))
+        )
+    } else {
+        format!(
+            "Les données viennent de l'API publique de GitHub, sans aucune donnée privée, et sont relues toutes les {}.",
+            crate::config::duree_lisible(r.config.rafraichir_secondes)
+        )
+    }
 }
 
 /// La quête à mettre en avant : celle qui a le plus de projets à traiter.

@@ -1,5 +1,7 @@
 # Dossier de compilation Rust : plusieurs centaines de Mo, jamais dans le dépôt
 /target/
+# Le site statique fabriqué par `make pages`
+/public/
 .DS_Store
 # jamais de secret (R9, R18)
 .env

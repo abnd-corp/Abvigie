@@ -5,11 +5,18 @@
  *
  * Sans JavaScript, tous les liens ouvrent la page du projet (`/projets/<nom>`) : rien ne dépend de ce fichier.
  */
+import { BASE } from './donnees.js';
 import { dessinerVignettes } from './vignettes.js';
 
 /** @typedef {import('./donnees.js').Donnees} Donnees */
 
-const PREFIXE = '/projets/';
+const PREFIXE = `${BASE}/projets/`;
+
+/**
+ * Le nom d'un projet dans un chemin (`/projets/abcom` ou, sur un site statique, `/projets/abcom/`).
+ * @param {string} chemin
+ */
+const slugDe = (chemin) => decodeURIComponent(chemin.slice(PREFIXE.length).replace(/\/$/, ''));
 
 /**
  * @param {{
@@ -35,7 +42,7 @@ export function brancherInterface(carte) {
     if (!vueProjet || !contenu || !vueEnsemble) return false;
     const chemin = `${PREFIXE}${encodeURIComponent(slug)}`;
     try {
-      const reponse = await fetch(`${chemin}?partial=1`, { headers: { Accept: 'text/html' } });
+      const reponse = await fetch(carte.donnees.statique ? `${chemin}/partiel.html` : `${chemin}?partial=1`, { headers: { Accept: 'text/html' } });
       if (!reponse.ok) throw new Error(String(reponse.status));
       contenu.innerHTML = await reponse.text();
     } catch {
@@ -67,7 +74,7 @@ export function brancherInterface(carte) {
     const href = cible.getAttribute('href');
     if (!href || !href.startsWith(PREFIXE)) return;
     evenement.preventDefault();
-    ouvrir(decodeURIComponent(href.slice(PREFIXE.length)));
+    ouvrir(slugDe(href));
   });
 
   document.querySelector('.retour')?.addEventListener('click', () => {
@@ -76,7 +83,7 @@ export function brancherInterface(carte) {
   });
 
   window.addEventListener('popstate', () => {
-    if (location.pathname.startsWith(PREFIXE)) ouvrir(decodeURIComponent(location.pathname.slice(PREFIXE.length)), false);
+    if (location.pathname.startsWith(PREFIXE)) ouvrir(slugDe(location.pathname), false);
     else fermer();
   });
 
