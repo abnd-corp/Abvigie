@@ -10,7 +10,7 @@ Une règle regarde un projet et décide de lever, ou non, un **drapeau**. Chacun
 | `topics_insuffisants` | R20 | info | moins de 2 topics | « Moins de 2 topics (1 actuellement) » |
 | `jalon_echu` | R46 | attention | au moins une issue dont le jalon a dépassé son échéance | « 2 issues en retard (échéance du jalon dépassée) » |
 | `jalon_manquant` | R46 | attention | au moins une issue humaine sans jalon, donc sans échéance | « 1 issue sans jalon, donc sans échéance » |
-| `pr_en_attente` | R4 | info | une pull request **humaine** attend depuis plus de 7 jours (les robots sont ignorés) | « 1 pull request attend une relecture depuis plus de 7 jours » |
+| `pr_en_attente` | R4 | info | une pull request **humaine** attend depuis plus de 7 jours (les robots sont ignorés) | « 1 pull request attend une relecture depuis plus de 7 jours » (« 2 pull requests attendent… » au pluriel) |
 | `dormant` | R26 | attention | aucune activité depuis 180 jours (réglable) | « Sans activité depuis 200 jours : à relancer ou à archiver » |
 
 Les drapeaux sont triés par gravité (alerte, attention, info). Le fanion d'un bâtiment prend la couleur du plus grave.

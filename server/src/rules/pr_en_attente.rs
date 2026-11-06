@@ -17,8 +17,8 @@ pub fn evaluer(c: &Contexte) -> Option<Drapeau> {
         regle: "R4",
         gravite: Gravite::Info,
         message: format!(
-            "{} attend une relecture depuis plus de {SEUIL_JOURS} jours",
-            nombre(n, "pull request", "pull requests")
+            "{} une relecture depuis plus de {SEUIL_JOURS} jours",
+            nombre(n, "pull request attend", "pull requests attendent")
         ),
     })
 }
@@ -45,6 +45,16 @@ mod tests {
         assert_eq!(
             evaluer(&c).unwrap().message,
             "1 pull request attend une relecture depuis plus de 7 jours"
+        );
+
+        // l'accord suit le nombre
+        let mut autre = ticket(4);
+        autre.age_jours = 30;
+        let deux = [prs[0].clone(), autre];
+        c.prs = &deux;
+        assert_eq!(
+            evaluer(&c).unwrap().message,
+            "2 pull requests attendent une relecture depuis plus de 7 jours"
         );
     }
 }
