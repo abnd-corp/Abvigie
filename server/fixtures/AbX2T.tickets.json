@@ -1,0 +1,152 @@
+[
+  {
+    "number": 20,
+    "title": "build: garantir des releases minimales sans testdata",
+    "html_url": "https://github.com/abnd-corp/AbX2T/issues/20",
+    "user": {
+      "login": "hugolagouardat",
+      "type": "User"
+    },
+    "milestone": {
+      "title": "Semaine du 26 octobre",
+      "due_on": "2026-10-31T00:00:00Z"
+    },
+    "created_at": "2026-10-25T01:09:32Z",
+    "pull_request": null
+  },
+  {
+    "number": 19,
+    "title": "docs: clarifier et actualiser la documentation avant release",
+    "html_url": "https://github.com/abnd-corp/AbX2T/issues/19",
+    "user": {
+      "login": "hugolagouardat",
+      "type": "User"
+    },
+    "milestone": {
+      "title": "Semaine du 26 octobre",
+      "due_on": "2026-10-31T00:00:00Z"
+    },
+    "created_at": "2026-10-25T01:09:30Z",
+    "pull_request": null
+  },
+  {
+    "number": 18,
+    "title": "docs: améliorer le référencement SEO et GEO du projet",
+    "html_url": "https://github.com/abnd-corp/AbX2T/issues/18",
+    "user": {
+      "login": "hugolagouardat",
+      "type": "User"
+    },
+    "milestone": {
+      "title": "Semaine du 26 octobre",
+      "due_on": "2026-10-31T00:00:00Z"
+    },
+    "created_at": "2026-10-25T01:09:28Z",
+    "pull_request": null
+  },
+  {
+    "number": 17,
+    "title": "fix: conserver le texte des zones de texte dans la sortie TXT",
+    "html_url": "https://github.com/abnd-corp/AbX2T/issues/17",
+    "user": {
+      "login": "hugolagouardat",
+      "type": "User"
+    },
+    "milestone": {
+      "title": "Semaine du 26 octobre",
+      "due_on": "2026-10-31T00:00:00Z"
+    },
+    "created_at": "2026-10-25T00:36:09Z",
+    "pull_request": null
+  },
+  {
+    "number": 16,
+    "title": "fix: préserver le texte arabe lors de l’extraction du PDF",
+    "html_url": "https://github.com/abnd-corp/AbX2T/issues/16",
+    "user": {
+      "login": "hugolagouardat",
+      "type": "User"
+    },
+    "milestone": {
+      "title": "Semaine du 26 octobre",
+      "due_on": "2026-10-31T00:00:00Z"
+    },
+    "created_at": "2026-10-25T00:36:07Z",
+    "pull_request": null
+  },
+  {
+    "number": 15,
+    "title": "ci: fermer les issues au merge dans dev (R3, R6)",
+    "html_url": "https://github.com/abnd-corp/AbX2T/pull/15",
+    "user": {
+      "login": "Rxdy",
+      "type": "User"
+    },
+    "milestone": null,
+    "created_at": "2026-10-25T00:24:34Z",
+    "pull_request": {}
+  },
+  {
+    "number": 14,
+    "title": "chore: mettre à jour ONLYOFFICE 10 et versionner les tests de conversion",
+    "html_url": "https://github.com/abnd-corp/AbX2T/pull/14",
+    "user": {
+      "login": "hugolagouardat",
+      "type": "User"
+    },
+    "milestone": null,
+    "created_at": "2026-10-25T00:01:41Z",
+    "pull_request": {}
+  },
+  {
+    "number": 11,
+    "title": "fix: l'exécutable s'appelle Abx2t sous Linux aussi",
+    "html_url": "https://github.com/abnd-corp/AbX2T/pull/11",
+    "user": {
+      "login": "hugolagouardat",
+      "type": "User"
+    },
+    "milestone": null,
+    "created_at": "2026-10-24T22:51:38Z",
+    "pull_request": {}
+  },
+  {
+    "number": 10,
+    "title": "chore: Dependabot avec quarantaine de 7 jours (R24)",
+    "html_url": "https://github.com/abnd-corp/AbX2T/pull/10",
+    "user": {
+      "login": "Rxdy",
+      "type": "User"
+    },
+    "milestone": null,
+    "created_at": "2026-10-24T22:49:05Z",
+    "pull_request": {}
+  },
+  {
+    "number": 9,
+    "title": "docs: README en anglais, version française dans README.fr.md",
+    "html_url": "https://github.com/abnd-corp/AbX2T/pull/9",
+    "user": {
+      "login": "hugolagouardat",
+      "type": "User"
+    },
+    "milestone": null,
+    "created_at": "2026-10-24T22:36:34Z",
+    "pull_request": {}
+  },
+  {
+    "number": 8,
+    "title": "README bilingue : anglais dans README.md, français dans README.fr.md",
+    "html_url": "https://github.com/abnd-corp/AbX2T/issues/8",
+    "user": {
+      "login": "hugolagouardat",
+      "type": "User"
+    },
+    "milestone": {
+      "title": "Semaine du 26 octobre",
+      "due_on": "2026-10-31T00:00:00Z"
+    },
+    "created_at": "2026-10-24T22:36:27Z",
+    "pull_request": null
+  }
+]

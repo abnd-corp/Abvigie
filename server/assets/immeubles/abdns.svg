@@ -1,0 +1,10 @@
+<circle class="as" cx="50" cy="31" r="12"/>
+<path class="as" d="M38 31h24M50 19v24M44 22c-4 6-4 12 0 18M56 22c4 6 4 12 0 18"/>
+<path class="c t" d="M20 150V78Q50 46 80 78V150Z"/>
+<path class="o" d="M20 78Q50 46 80 78V88Q50 56 20 88Z"/>
+<rect class="w1" x="30" y="98" width="10" height="12"/>
+<rect class="w2" x="60" y="98" width="10" height="12"/>
+<rect class="w3" x="30" y="120" width="10" height="12"/>
+<rect class="w4" x="60" y="120" width="10" height="12"/>
+<rect class="p" x="44" y="126" width="12" height="24"/>
+<circle class="a" cx="50" cy="134" r="3.5"/>

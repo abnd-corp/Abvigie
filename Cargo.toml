@@ -1,0 +1,31 @@
+# Abvigie : un seul crate (server/). La page web est du HTML, du CSS et un peu de JS embarqués dans le binaire.
+[workspace]
+members = ["server"]
+resolver = "3"
+
+[workspace.package]
+version = "0.0.0"
+edition = "2024"
+rust-version = "1.85"
+license = "AGPL-3.0-or-later"
+repository = "https://github.com/abnd-corp/Abvigie"
+
+# Mise au point : des symboles pour les backtraces, rien de plus. Sans cela, target/ pèse des centaines de Mo.
+[profile.dev]
+debug = "line-tables-only"
+# Le cache incrémental pesait à lui seul 56 Mo pour un crate de quelques milliers de lignes qui compile en quelques secondes.
+incremental = false
+
+[profile.dev.build-override]
+debug = false
+
+[profile.dev.package."*"]
+debug = false
+
+# Livraison : un binaire petit. panic = "unwind" est gardé exprès : un bogue de rendu ne doit pas tuer le service
+# (chaque requête et chaque rafraîchissement sont protégés par catch_unwind), pour une trentaine de ko de plus.
+[profile.release]
+opt-level = "z"
+lto = "fat"
+codegen-units = 1
+strip = "symbols"

@@ -1,0 +1,11 @@
+<circle class="a" cx="42" cy="88" r="3"/>
+<circle class="a" cx="50" cy="83" r="3"/>
+<circle class="a" cx="58" cy="88" r="3"/>
+<path class="o t" d="M10 100L50 66L90 100Z"/>
+<rect class="c t" x="16" y="100" width="68" height="50"/>
+<rect class="w1" x="24" y="108" width="16" height="14"/>
+<rect class="w2" x="60" y="108" width="16" height="14"/>
+<rect class="w3" x="24" y="130" width="9" height="9"/>
+<rect class="w4" x="67" y="130" width="9" height="9"/>
+<rect class="p" x="44" y="126" width="12" height="24"/>
+<path class="as" d="M0 152q12.5-6 25 0t25 0t25 0t25 0"/>

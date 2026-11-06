@@ -1,0 +1,41 @@
+[
+  {
+    "number": 53,
+    "title": "ci: fermer les issues au merge dans dev (R3, R6)",
+    "html_url": "https://github.com/abnd-corp/Abcom/pull/53",
+    "user": {
+      "login": "Rxdy",
+      "type": "User"
+    },
+    "milestone": null,
+    "created_at": "2026-10-25T00:24:47Z",
+    "pull_request": {}
+  },
+  {
+    "number": 52,
+    "title": "Audit des dépendances Rust en échec : 3 vulnérabilités",
+    "html_url": "https://github.com/abnd-corp/Abcom/issues/52",
+    "user": {
+      "login": "Rxdy",
+      "type": "User"
+    },
+    "milestone": {
+      "title": "Semaine du 26 octobre",
+      "due_on": "2026-11-01T00:00:00Z"
+    },
+    "created_at": "2026-10-24T23:56:39Z",
+    "pull_request": null
+  },
+  {
+    "number": 51,
+    "title": "chore: Dependabot avec quarantaine de 7 jours (R24)",
+    "html_url": "https://github.com/abnd-corp/Abcom/pull/51",
+    "user": {
+      "login": "Rxdy",
+      "type": "User"
+    },
+    "milestone": null,
+    "created_at": "2026-10-24T22:49:00Z",
+    "pull_request": {}
+  }
+]
