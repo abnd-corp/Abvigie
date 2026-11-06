@@ -1,0 +1,45 @@
+name: Pages
+
+# Publie le site statique (démonstration) à chaque promotion vers main. Voir docs/deploiement.md et docs/adr/0005-mode-statique.md.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  construire:
+    name: Écrire le site statique
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Fabriquer le site à partir des données de démonstration
+        env:
+          ABVIGIE_URL: https://abnd-corp.github.io/Abvigie
+        run: cargo run --release --locked -- --fixtures server/fixtures --export public
+      - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: public
+          include-hidden-files: true # .well-known/security.txt
+
+  publier:
+    name: Publier sur GitHub Pages
+    needs: construire
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploiement.outputs.page_url }}
+    steps:
+      - id: deploiement
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1

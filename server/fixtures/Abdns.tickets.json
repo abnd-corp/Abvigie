@@ -1,0 +1,227 @@
+[
+  {
+    "number": 69,
+    "title": "feat: détecter l'interception TLS et épingler la clé d'un serveur",
+    "html_url": "https://github.com/abnd-corp/Abdns/issues/69",
+    "user": {
+      "login": "hugolagouardat",
+      "type": "User"
+    },
+    "milestone": null,
+    "created_at": "2026-11-05T16:12:17Z",
+    "pull_request": null
+  },
+  {
+    "number": 63,
+    "title": "chore: publier pour chaque architecture (Linux musl, Windows ARM)",
+    "html_url": "https://github.com/abnd-corp/Abdns/issues/63",
+    "user": {
+      "login": "hugolagouardat",
+      "type": "User"
+    },
+    "milestone": null,
+    "created_at": "2026-11-04T17:00:27Z",
+    "pull_request": null
+  },
+  {
+    "number": 58,
+    "title": "feat: chemins par défaut Windows et tests de l'outil portables",
+    "html_url": "https://github.com/abnd-corp/Abdns/pull/58",
+    "user": {
+      "login": "Rxdy",
+      "type": "User"
+    },
+    "milestone": null,
+    "created_at": "2026-11-04T11:35:36Z",
+    "pull_request": {}
+  },
+  {
+    "number": 55,
+    "title": "docs: Windows, points non couverts par #9 à trancher",
+    "html_url": "https://github.com/abnd-corp/Abdns/issues/55",
+    "user": {
+      "login": "Rxdy",
+      "type": "User"
+    },
+    "milestone": null,
+    "created_at": "2026-11-04T11:10:39Z",
+    "pull_request": null
+  },
+  {
+    "number": 53,
+    "title": "feat: niveaux de journal et protection des journaux",
+    "html_url": "https://github.com/abnd-corp/Abdns/issues/53",
+    "user": {
+      "login": "hugolagouardat",
+      "type": "User"
+    },
+    "milestone": {
+      "title": "0.3.0",
+      "due_on": "2026-12-15T00:00:00Z"
+    },
+    "created_at": "2026-11-04T08:36:11Z",
+    "pull_request": null
+  },
+  {
+    "number": 48,
+    "title": "feat: empêcher les applications de contourner abdns",
+    "html_url": "https://github.com/abnd-corp/Abdns/issues/48",
+    "user": {
+      "login": "hugolagouardat",
+      "type": "User"
+    },
+    "milestone": {
+      "title": "0.3.0",
+      "due_on": "2026-12-15T00:00:00Z"
+    },
+    "created_at": "2026-11-03T10:27:14Z",
+    "pull_request": null
+  },
+  {
+    "number": 32,
+    "title": "feat: délais réglables et regroupés en un seul endroit",
+    "html_url": "https://github.com/abnd-corp/Abdns/issues/32",
+    "user": {
+      "login": "hugolagouardat",
+      "type": "User"
+    },
+    "milestone": {
+      "title": "0.3.0",
+      "due_on": "2026-12-15T00:00:00Z"
+    },
+    "created_at": "2026-11-02T20:39:41Z",
+    "pull_request": null
+  },
+  {
+    "number": 31,
+    "title": "feat: notifications en trois niveaux (all, important, off)",
+    "html_url": "https://github.com/abnd-corp/Abdns/issues/31",
+    "user": {
+      "login": "hugolagouardat",
+      "type": "User"
+    },
+    "milestone": {
+      "title": "0.3.0",
+      "due_on": "2026-12-15T00:00:00Z"
+    },
+    "created_at": "2026-11-02T19:58:08Z",
+    "pull_request": null
+  },
+  {
+    "number": 30,
+    "title": "feat: profils de DNS selon le réseau (filaire, Wi-Fi, domaine)",
+    "html_url": "https://github.com/abnd-corp/Abdns/issues/30",
+    "user": {
+      "login": "hugolagouardat",
+      "type": "User"
+    },
+    "milestone": {
+      "title": "0.3.0",
+      "due_on": "2026-12-15T00:00:00Z"
+    },
+    "created_at": "2026-11-02T19:31:20Z",
+    "pull_request": null
+  },
+  {
+    "number": 29,
+    "title": "feat: serveurs DNS en clair dans la liste, notification au choix",
+    "html_url": "https://github.com/abnd-corp/Abdns/issues/29",
+    "user": {
+      "login": "hugolagouardat",
+      "type": "User"
+    },
+    "milestone": {
+      "title": "0.3.0",
+      "due_on": "2026-12-15T00:00:00Z"
+    },
+    "created_at": "2026-11-02T19:31:17Z",
+    "pull_request": null
+  },
+  {
+    "number": 21,
+    "title": "fix: DNS du poste coupé jusqu'à 30 s après un arrêt brutal d'abdnsd",
+    "html_url": "https://github.com/abnd-corp/Abdns/issues/21",
+    "user": {
+      "login": "Rxdy",
+      "type": "User"
+    },
+    "milestone": null,
+    "created_at": "2026-11-02T18:34:36Z",
+    "pull_request": null
+  },
+  {
+    "number": 20,
+    "title": "docs: liens entrants (listes, annuaires, présentations)",
+    "html_url": "https://github.com/abnd-corp/Abdns/issues/20",
+    "user": {
+      "login": "hugolagouardat",
+      "type": "User"
+    },
+    "milestone": {
+      "title": "Visibilité",
+      "due_on": "2026-12-31T00:00:00Z"
+    },
+    "created_at": "2026-11-02T18:31:07Z",
+    "pull_request": null
+  },
+  {
+    "number": 19,
+    "title": "chore: publication sur crates.io",
+    "html_url": "https://github.com/abnd-corp/Abdns/issues/19",
+    "user": {
+      "login": "hugolagouardat",
+      "type": "User"
+    },
+    "milestone": {
+      "title": "Visibilité",
+      "due_on": "2026-12-31T00:00:00Z"
+    },
+    "created_at": "2026-11-02T18:31:03Z",
+    "pull_request": null
+  },
+  {
+    "number": 18,
+    "title": "docs: page web du projet (GitHub Pages, FR et EN)",
+    "html_url": "https://github.com/abnd-corp/Abdns/issues/18",
+    "user": {
+      "login": "hugolagouardat",
+      "type": "User"
+    },
+    "milestone": {
+      "title": "Visibilité",
+      "due_on": "2026-12-31T00:00:00Z"
+    },
+    "created_at": "2026-11-02T18:31:00Z",
+    "pull_request": null
+  },
+  {
+    "number": 10,
+    "title": "chore: publier la version 0.2.0 et le dépôt Homebrew",
+    "html_url": "https://github.com/abnd-corp/Abdns/issues/10",
+    "user": {
+      "login": "hugolagouardat",
+      "type": "User"
+    },
+    "milestone": {
+      "title": "0.2.0",
+      "due_on": "2026-11-16T00:00:00Z"
+    },
+    "created_at": "2026-11-02T17:58:49Z",
+    "pull_request": null
+  },
+  {
+    "number": 9,
+    "title": "feat: support de Windows (service, canal nommé, winget)",
+    "html_url": "https://github.com/abnd-corp/Abdns/issues/9",
+    "user": {
+      "login": "hugolagouardat",
+      "type": "User"
+    },
+    "milestone": {
+      "title": "0.2.0",
+      "due_on": "2026-11-16T00:00:00Z"
+    },
+    "created_at": "2026-11-02T17:58:46Z",
+    "pull_request": null
+  }
+]

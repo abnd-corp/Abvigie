@@ -1,0 +1,122 @@
+[
+  {
+    "number": 20,
+    "title": "chore(deps-dev): bump @vue/test-utils from 2.4.6 to 2.5.1 in /frontend",
+    "html_url": "https://github.com/abnd-corp/Abyss/pull/20",
+    "user": {
+      "login": "dependabot[bot]",
+      "type": "Bot"
+    },
+    "milestone": null,
+    "created_at": "2026-10-24T23:02:14Z",
+    "pull_request": {}
+  },
+  {
+    "number": 19,
+    "title": "chore(deps): bump chart.js from 4.4.0 to 4.5.1 in /frontend",
+    "html_url": "https://github.com/abnd-corp/Abyss/pull/19",
+    "user": {
+      "login": "dependabot[bot]",
+      "type": "Bot"
+    },
+    "milestone": null,
+    "created_at": "2026-10-24T23:02:11Z",
+    "pull_request": {}
+  },
+  {
+    "number": 18,
+    "title": "chore(deps-dev): bump happy-dom from 14.12.3 to 21.0.3 in /frontend",
+    "html_url": "https://github.com/abnd-corp/Abyss/pull/18",
+    "user": {
+      "login": "dependabot[bot]",
+      "type": "Bot"
+    },
+    "milestone": null,
+    "created_at": "2026-10-24T23:02:05Z",
+    "pull_request": {}
+  },
+  {
+    "number": 17,
+    "title": "chore(deps): bump @fastify/jwt from 10.0.0 to 10.2.5 in /backend",
+    "html_url": "https://github.com/abnd-corp/Abyss/pull/17",
+    "user": {
+      "login": "dependabot[bot]",
+      "type": "Bot"
+    },
+    "milestone": null,
+    "created_at": "2026-10-24T23:02:04Z",
+    "pull_request": {}
+  },
+  {
+    "number": 16,
+    "title": "chore(deps): bump pinia from 2.3.1 to 4.1.0 in /frontend",
+    "html_url": "https://github.com/abnd-corp/Abyss/pull/16",
+    "user": {
+      "login": "dependabot[bot]",
+      "type": "Bot"
+    },
+    "milestone": null,
+    "created_at": "2026-10-24T23:02:03Z",
+    "pull_request": {}
+  },
+  {
+    "number": 15,
+    "title": "chore(deps): bump bcryptjs and @types/bcryptjs in /backend",
+    "html_url": "https://github.com/abnd-corp/Abyss/pull/15",
+    "user": {
+      "login": "dependabot[bot]",
+      "type": "Bot"
+    },
+    "milestone": null,
+    "created_at": "2026-10-24T23:02:02Z",
+    "pull_request": {}
+  },
+  {
+    "number": 14,
+    "title": "chore(deps): bump pg from 8.20.0 to 8.23.1 in /backend",
+    "html_url": "https://github.com/abnd-corp/Abyss/pull/14",
+    "user": {
+      "login": "dependabot[bot]",
+      "type": "Bot"
+    },
+    "milestone": null,
+    "created_at": "2026-10-24T23:01:59Z",
+    "pull_request": {}
+  },
+  {
+    "number": 13,
+    "title": "chore(deps): bump @fastify/cors from 11.2.0 to 11.3.1 in /backend",
+    "html_url": "https://github.com/abnd-corp/Abyss/pull/13",
+    "user": {
+      "login": "dependabot[bot]",
+      "type": "Bot"
+    },
+    "milestone": null,
+    "created_at": "2026-10-24T23:01:52Z",
+    "pull_request": {}
+  },
+  {
+    "number": 12,
+    "title": "chore(deps): bump node from 18-alpine to 25-alpine in /frontend",
+    "html_url": "https://github.com/abnd-corp/Abyss/pull/12",
+    "user": {
+      "login": "dependabot[bot]",
+      "type": "Bot"
+    },
+    "milestone": null,
+    "created_at": "2026-10-24T23:01:44Z",
+    "pull_request": {}
+  },
+  {
+    "number": 11,
+    "title": "chore(deps): bump node from 20-alpine to 25-alpine in /backend",
+    "html_url": "https://github.com/abnd-corp/Abyss/pull/11",
+    "user": {
+      "login": "dependabot[bot]",
+      "type": "Bot"
+    },
+    "milestone": null,
+    "created_at": "2026-10-24T23:01:40Z",
+    "pull_request": {}
+  }
+]
